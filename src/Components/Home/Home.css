@@ -1,0 +1,22 @@
+.home{
+    min-height: 100vh;
+}
+.main-banner{
+    min-height: 100vh;
+    width: 100vw;
+    background: linear-gradient(to bottom, rgba(54,209,220,0.5),rgba(94,124,229, 0.5));
+    background-position: center;
+    display: flex;
+    flex-flow: row wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+}
+.main-banner-overlay{
+    background-image: url("../../Assets/comics-bg-1.png");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+}

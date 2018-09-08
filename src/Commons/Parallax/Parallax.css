@@ -1,0 +1,22 @@
+.Parallax{
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+    height: 40em;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+@media screen and (max-width: 768px){
+    .Parallax{
+        height: 15em;
+    }
+}
+
+@media screen and (max-width: 500px){
+    .Parallax{
+        height: 12em;
+    }
+}
