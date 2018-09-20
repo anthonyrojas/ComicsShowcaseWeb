@@ -15,8 +15,22 @@
 .main-banner-overlay{
     background-image: url("../../Assets/comics-bg-1.png");
     background-repeat: no-repeat;
+    background-position: center top;
     background-attachment: fixed;
     background-size: cover;
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
+}
+
+.i-circle-purple{
+    border-radius: 50%;
+    background:linear-gradient(to bottom left,#CB1EFF, #FF75E4, #FF1EC4);
+    box-shadow: 0 0 10px -1px #333;
+    padding: 0.3em;
+}
+
+@media screen and (max-width: 600px){
+    .main-banner h1{
+        font-size: 4.5rem !important;
+    }
 }
