@@ -27,11 +27,25 @@ const initialState = {
     lastName: EMPTY_STR,
     firstName: EMPTY_STR,
     password: EMPTY_STR,
-    picture: EMPTY_STR,
+    profile: EMPTY_STR,
     birthDate: DEFAULT_NUM,
     birthMonth: DEFAULT_NUM,
     birthYear: DEFAULT_NUM,
-    registerButtonVisible: false
+    registerButtonVisible: false,
+    registering: false,
+    loggingIn: false,
+    statusMessage: EMPTY_STR,
+    errors:{
+        username: EMPTY_STR,
+        email: EMPTY_STR,
+        password: EMPTY_STR,
+        firstName: EMPTY_STR,
+        lastName: EMPTY_STR,
+        profile: EMPTY_STR,
+        birthMonth: DEFAULT_NUM,
+        birthDate: DEFAULT_NUM,
+        birthYear: DEFAULT_NUM
+    }
 }
 
 export default (state = initialState, action)=>{
@@ -59,7 +73,7 @@ export default (state = initialState, action)=>{
         case USER_PICTURE_CHANGED:
             return{
                 ...state,
-                picture: action.payload
+                profile: action.payload
             }
         case BIRTH_DATE_CHANGED: 
             return{
@@ -85,6 +99,47 @@ export default (state = initialState, action)=>{
             return{
                 ...state,
                 registerButtonVisible: action.payload
+            }
+        case LOGIN_ATTEMPT:
+            return{
+                ...state,
+                loggingIn: action.payload
+            }
+        case LOGIN_SUCCESS:
+            return{
+                ...state,
+                loggingIn: false,
+                statusMessage: action.payload,
+                username: EMPTY_STR,
+                password: EMPTY_STR
+            }
+        case LOGIN_FAILURE:
+            return{
+                ...state,
+                loggingIn: false,
+                statusMessage: action.payload
+            }
+        case REGISTER_ATTEMPT:
+            return{
+                ...state,
+                registering: action.payload.registering,
+                statusMessage: action.payload.statusMessage
+            }
+        case REGISTER_FAILURE:
+            return{
+                ...state,
+                statusMessage: action.payload.statusMessage,
+                errors:{
+                    firstName: action.payload.firstName,
+                    lastName: action.payload.lastName,
+                    password: action.payload.password,
+                    email: action.payload.email,
+                    username: action.payload.username,
+                    profile: action.payload.profile,
+                    birthMonth: action.payload.birthMonth,
+                    birthDate: action.payload.birthDate,
+                    birthYear: action.payload.birthYear
+                }
             }
         default: return state;
     }
