@@ -34,6 +34,7 @@ const initialState = {
     registerButtonVisible: false,
     registering: false,
     loggingIn: false,
+    loginButtonVisible: false,
     statusMessage: EMPTY_STR,
     errors:{
         username: EMPTY_STR,
@@ -100,6 +101,11 @@ export default (state = initialState, action)=>{
                 ...state,
                 registerButtonVisible: action.payload
             }
+        case LOGIN_BUTTON_TOGGLE:
+            return{
+                ...state,
+                loginButtonVisible: action.payload
+            }
         case LOGIN_ATTEMPT:
             return{
                 ...state,
@@ -128,6 +134,7 @@ export default (state = initialState, action)=>{
         case REGISTER_FAILURE:
             return{
                 ...state,
+                registering: false,
                 statusMessage: action.payload.statusMessage,
                 errors:{
                     firstName: action.payload.firstName,
@@ -140,6 +147,12 @@ export default (state = initialState, action)=>{
                     birthDate: action.payload.birthDate,
                     birthYear: action.payload.birthYear
                 }
+            }
+        case REGISTER_SUCCESS:
+            return{
+                ...state,
+                registering: false,
+                statusMessage: action.payload.statusMessage
             }
         default: return state;
     }

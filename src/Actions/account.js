@@ -15,8 +15,7 @@ import {
     EMAIL_CHANGED,
     REGISTER_BUTTON_TOGGLE
 } from './types';
-import axios from 'axios';
-import { HOST, EMPTY_STR } from '../constants';
+import { HOST, EMPTY_STR, DEFAULT_NUM } from '../constants';
 
 export const firstNameChanged = (data)=>{
     return{
@@ -74,10 +73,11 @@ export const login = (data)=>{
             payload: true
         });
         let inputErrs = {
-            username: null,
-            password: null
+            username: EMPTY_STR,
+            password: EMPTY_STR
         }
-        let {username, password, email, picture, lastName, firstName} = data;
+        let username = data.username;
+        let password = data.password;
         if(username === undefined || username === null || username.trim()===''){
             inputErrs.username = 'You must enter your correct, valid username.'
         }
@@ -137,10 +137,10 @@ export const register = (data)=>{
             profile: EMPTY_STR,
             firstName: EMPTY_STR,
             lastName: EMPTY_STR,
-            email: null,
-            birthMonth: null,
-            birthDate: null,
-            birthYear: null   
+            email: EMPTY_STR,
+            birthMonth: DEFAULT_NUM,
+            birthDate: DEFAULT_NUM,
+            birthYear: DEFAULT_NUM   
         }
         if(data.username === undefined || data.username === null || data.username.trim() === ''){
             inputErrs.username = 'You must enter a valid username. Your username cannot contain whitespace.';
@@ -155,7 +155,7 @@ export const register = (data)=>{
             inputErrs.email = 'You must enter a valid email address.';
         }
         if(data.firstName === undefined || data.firstName === null || data.firstName.trim() === ''){
-            inpurtErrs.firstName = 'You must enter your first name.';
+            inputErrs.firstName = 'You must enter your first name.';
         }
         if(data.lastName === undefined || data.firstName === null || data.firstName.trim() === ''){
             inputErrs.lastName = 'You must enter your last name.';
@@ -184,39 +184,38 @@ export const register = (data)=>{
         else if(data.birthYear < (new Date()).getFullYear() - 100 || data.birthYear > (new Date()).getFullYear()){
             inputErrs.birthYear = 'Invalid borth year.';
         }
-        let data = {
-            username,
-            email,
-            firstName,
-            lastName,
-            password,
-            birthMonth,
-            birthDate,
-            birthYear,
+        let formData = {
+            username: data.username,
+            email: data.email,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            password: data.password,
+            birthMonth: data.birthMonth,
+            birthDate: data.birthDate,
+            birthYear: data.birthYear,
             profileStr: null
         }
         let errorExists = false;
-        Object.keys(data).every((k)=>{
-            if(data[k] !== null){
+        Object.keys(inputErrs).every((k)=>{
+            if(inputErrs[k] !== null){
                 let failData = {
                     statusMessage: 'Please fill out all required fields with valid entries.',
                     errors: inputErrs
                 }
                 registerFailure(dispatch, failData);
-                break;
             }
-        })
+        });
         if(inputErrs.username != null || inputErrs)
-        axios.post(`${HOST}/api/users/register`, data)
+        axios.post(`${HOST}/api/users/register`, formData)
         .then(res =>{
-            loginSuccess(dispatch, res.data);
+            registerSuccess(dispatch, res.data);
         })
         .catch(err => {
             let failData = {
                 statusMessage: err.response.data.statusMessage,
                 errors: inputErrs
             };
-            loginFailure(dispatch, failData);
+            registerFailure(dispatch, failData);
         });
     }
 }
