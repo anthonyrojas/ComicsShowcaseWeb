@@ -27,6 +27,12 @@ class Sidenav extends Component{
                             <ListItemText primary='Login'></ListItemText>
                         </ListItem>
                     </Link>
+                    <Link style={{textDecoration: 'none'}} to='/register'>
+                        <ListItem button>
+                            <ListItemIcon><Icon>person_add</Icon></ListItemIcon>
+                            <ListItemText primary='Register'></ListItemText>
+                        </ListItem>
+                    </Link>
                 </List>
                 </div>
             </Drawer>

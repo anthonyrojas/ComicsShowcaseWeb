@@ -13,6 +13,7 @@ import Footer from './Components/Footer/Footer';
 import { AppBar, Toolbar, Drawer, Typography, List, ListItem, ListItemText, ListItemIcon, Icon } from '@material-ui/core';
 import {Home as HomeIcon} from '@material-ui/icons' ;
 import Login from './Components/Login/Login';
+import Register from './Components/Register/Register';
 import Aux from './HOC/AuxHOC';
 const theme = createMuiTheme({
   palette: {
@@ -56,6 +57,7 @@ class App extends Component {
                 <Switch>
                   <Route exact path='/' component={Home}></Route>
                   <Route exact path='/login' component={Login}></Route>
+                  <Route exact path='/register' component={Register}></Route>
                 </Switch>
               </Aux>
             </Router>
