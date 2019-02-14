@@ -10,10 +10,15 @@ import {
     USER_FIRST_NAME_CHANGED,
     USER_LAST_NAME_CHANGED,
     USER_PICTURE_CHANGED,
+    BIRTH_DATE_CHANGED,
     USERNAME_CHANGED,
     PASSWORD_CHANGED,
     EMAIL_CHANGED,
-    REGISTER_BUTTON_TOGGLE
+    REGISTER_BUTTON_TOGGLE,
+    USER_PICTURE_CHANGED_FAILURE,
+    USER_PICTURE_CHANGED_SUCCESS,
+    USER_PICTURE_UPLOAD_ATTEMPT,
+    CANCEL_UPLOAD_PROFILE
 } from './types';
 import { HOST, EMPTY_STR, DEFAULT_NUM } from '../constants';
 
@@ -26,6 +31,12 @@ export const firstNameChanged = (data)=>{
 export const lastNameChanged = (data)=>{
     return{
         type: USER_LAST_NAME_CHANGED,
+        payload: data
+    }
+}
+export const birthDateChanged = (data)=>{
+    return{
+        type: BIRTH_DATE_CHANGED,
         payload: data
     }
 }
@@ -62,6 +73,53 @@ export const loginButtonToggle = (data)=>{
 export const registerButtonToggle = (data)=>{
     return{
         type: REGISTER_BUTTON_TOGGLE,
+        payload: data
+    }
+}
+export const attemptUploadUserProfile = (data)=>{
+    return(dispatch)=>{
+        dispatch({
+            type: USER_PICTURE_UPLOAD_ATTEMPT,
+            payload: true
+        });
+        let inputErr = {profile: EMPTY_STR};
+        if(!data.type.includes('image')){
+            inputErr.profile = 'Wrong file format uploaded.';
+            failedUploadUserProfile(dispatch, inputErr);
+        }else{
+            let reader = new FileReader();
+            reader.readAsDataURL(data);
+            reader.onloadend = () => {
+                let successData = {
+                    file: data,
+                    fileData: reader.result
+                }
+                successUploadUserProfile(dispatch, successData);
+            }
+            reader.onerror = () =>{
+                let failData = {
+                    profile: 'Error uploading file.'
+                }
+                failedUploadUserProfile(dispatch, failData);
+            }
+        }
+    }
+}
+export const failedUploadUserProfile = (dispatch, data)=>{
+    dispatch({
+        type: USER_PICTURE_CHANGED_FAILURE,
+        payload: data
+    });
+};
+export const successUploadUserProfile = (dispatch, data)=>{
+    dispatch({
+        type: USER_PICTURE_CHANGED_SUCCESS,
+        payload: data
+    });
+}
+export const cancelUploadProfile = (data)=>{
+    return{
+        type: CANCEL_UPLOAD_PROFILE,
         payload: data
     }
 }
@@ -138,9 +196,7 @@ export const register = (data)=>{
             firstName: EMPTY_STR,
             lastName: EMPTY_STR,
             email: EMPTY_STR,
-            birthMonth: DEFAULT_NUM,
-            birthDate: DEFAULT_NUM,
-            birthYear: DEFAULT_NUM   
+            birthDate: DEFAULT_NUM
         }
         if(data.username === undefined || data.username === null || data.username.trim() === ''){
             inputErrs.username = 'You must enter a valid username. Your username cannot contain whitespace.';
@@ -166,23 +222,8 @@ export const register = (data)=>{
         else if(data.password.length < 6){
             inputErrs.password = 'Your password must be at least 6 characters.';
         }
-        if(data.birthMonth === undefined || data.birthMonth === null || isNaN(data.birthMonth)){
-            inputErrs.birthMonth = 'You must enter a valid birth month.';
-        }
-        else if(data.birthMonth < 1 || data.birthMonth > 12){
-            inputErrs.birthMonth = 'Invalid birth month.';
-        }
-        if(data.birthDate === undefined || data.birthDate === null || isNaN(data.birthDate)){
+        if(data.birthDate === undefined || data.birthDate === null){
             inputErrs.birthDate = 'You must enter a valid birth date.';
-        }
-        else if(data.birthDate < 1 || data.birthDate > 31){
-            inputErrs.birthDate = 'Invalid birth date.';
-        }
-        if(data.birthYear === undefined || data.birthYear === null || isNaN(data.birthYear)){
-            inputErrs.birthYear = 'You must enter a valid birth year.';
-        }
-        else if(data.birthYear < (new Date()).getFullYear() - 100 || data.birthYear > (new Date()).getFullYear()){
-            inputErrs.birthYear = 'Invalid borth year.';
         }
         let formData = {
             username: data.username,
@@ -205,12 +246,12 @@ export const register = (data)=>{
                 registerFailure(dispatch, failData);
             }
         });
-        if(inputErrs.username != null || inputErrs)
         axios.post(`${HOST}/api/users/register`, formData)
         .then(res =>{
             registerSuccess(dispatch, res.data);
         })
         .catch(err => {
+            console.log(err);
             let failData = {
                 statusMessage: err.response.data.statusMessage,
                 errors: inputErrs

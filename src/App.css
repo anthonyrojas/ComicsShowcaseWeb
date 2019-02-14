@@ -213,3 +213,21 @@ body{
 .grd-blue-to-green-br{
     background: linear-gradient(to bottom right,#0080FF, #00A2FF, #11FF00) !important;
 }
+.grid-item-centered-w-padding{
+    text-align: center;
+    padding: 1em 0;
+}
+.avatar-lg{
+    width: 5em !important;
+    height: 5em !important;
+}
+.cancel-icon{
+    color: rgb(255, 72, 0);
+}
+.icon-w-text{
+    display: inline-flex;
+    vertical-align: middle;
+}
+.text-white{
+    color: #FFF;
+}
