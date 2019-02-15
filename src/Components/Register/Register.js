@@ -11,6 +11,8 @@ import Modal from '@material-ui/core/Modal';
 import Avatar from '@material-ui/core/Avatar';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Snackbar from '@material-ui/core/Snackbar';
 import {
     emailChanged,
     firstNameChanged,
@@ -97,6 +99,20 @@ class Register extends Component{
             <div className='register'>
             <Modal
                 className='modal-container'
+                open={this.props.registering}
+            >
+                <div className='modal-paper'>
+                    <Typography variant='subheading'>Registering...</Typography>
+                    <CircularProgress color='primary' />
+                </div>
+            </Modal>
+            <Snackbar
+                open={this.props.statusMessage !== EMPTY_STR}
+                anchorOrigin={{horizontal:'right', vertical: 'top'}}
+                message={this.props.statusMessage}
+            />
+            <Modal
+                className='modal-container'
                 open={this.props.uploadingProfile}
             >
                 <div className='modal-paper'>
@@ -113,6 +129,8 @@ class Register extends Component{
                         </Typography>
                         <form className='py-2' method='POST' onChange={this.onFormChanged.bind(this)}>
                             <TextField required
+                                error={this.props.errors.email !== EMPTY_STR}
+                                helperText={this.props.errors.email}
                                 margin='normal'
                                 label='Email'
                                 fullWidth
@@ -121,6 +139,8 @@ class Register extends Component{
                                 onChange={this.onEmailChanged.bind(this)}
                             />
                             <TextField required 
+                                error={this.props.errors.firstName !== EMPTY_STR}
+                                helperText={this.props.errors.firstName}
                                 margin='normal'
                                 label='First Name'
                                 fullWidth
@@ -128,6 +148,8 @@ class Register extends Component{
                                 onChange={this.onFirstNameChanged.bind(this)}
                             />
                             <TextField required 
+                                error={this.props.errors.lastName !== EMPTY_STR}
+                                helperText={this.props.errors.lastName}
                                 margin='normal'
                                 label='Last Name'
                                 fullWidth
@@ -135,6 +157,8 @@ class Register extends Component{
                                 onChange={this.onLastNameChanged.bind(this)}
                             />
                             <TextField required
+                                error={this.props.errors.birthDate !== EMPTY_STR}
+                                helperText={this.props.errors.birthDate}
                                 margin='normal'
                                 label='Birth Date'
                                 fullWidth
@@ -143,6 +167,8 @@ class Register extends Component{
                                 onChange={this.onBirthDateChanged.bind(this)}
                             />
                             <TextField required
+                                error={this.props.errors.username !== EMPTY_STR}
+                                helperText={this.props.errors.username}
                                 margin='normal'
                                 label='Username'
                                 fullWidth
@@ -150,6 +176,8 @@ class Register extends Component{
                                 onChange={this.onUsernameChanged.bind(this)}
                             />
                             <TextField required
+                                error={this.props.errors.password !== EMPTY_STR}
+                                helperText={this.props.errors.password}
                                 margin='normal'
                                 label='Password'
                                 fullWidth
@@ -160,6 +188,7 @@ class Register extends Component{
                             <Grid container direction='row' alignItems='center' justify='center'>
                                 <Grid 
                                     container 
+                                    wrap='wrap'
                                     direction='column' 
                                     justify='center' 
                                     alignItems='center' 
@@ -167,9 +196,15 @@ class Register extends Component{
                                 >
                                     <input type='file' style={{display: 'none'}} id='upload-picture-input' onChange={this.onFileUpload.bind(this)} ref={(fileUpload) => this.fileUpload = fileUpload}/>
                                     <Button variant='contained' color='default' onClick={()=>this.fileUpload.click()}>Upload Picture &nbsp; <CloudUploadIcon /></Button>
+                                    {
+                                        this.props.errors.profile !== EMPTY_STR ? 
+                                        <Typography variant='body2' color='secondary' component='p'>{this.props.errors.profile}</Typography> 
+                                        : null
+                                    }
                                 </Grid>
                                 <Grid 
                                     container 
+                                    wrap='wrap'
                                     direction='column' 
                                     justify='center' 
                                     alignItems='center' 
@@ -216,7 +251,8 @@ const mapStateToProps = state =>({
     uploadingProfile: state.account.uploadingProfile,
     registering: state.account.registering,
     registerButtonVisible: state.account.registerButtonVisible,
-    errors: state.account.errors
+    errors: state.account.errors,
+    statusMessage: state.account.statusMessage
 });
 export default connect(mapStateToProps,{
     emailChanged,

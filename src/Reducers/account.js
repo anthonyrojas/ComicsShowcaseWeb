@@ -45,7 +45,7 @@ const initialState = {
         firstName: EMPTY_STR,
         lastName: EMPTY_STR,
         profile: EMPTY_STR,
-        birthMonth: EMPTY_STR,
+        birthDate: EMPTY_STR,
     }
 }
 
@@ -54,22 +54,38 @@ export default (state = initialState, action)=>{
         case EMAIL_CHANGED:
             return{
                 ...state,
-                email: action.payload
+                email: action.payload,
+                errors: {
+                    ...state.errors,
+                    email: EMPTY_STR
+                }
             }
         case USERNAME_CHANGED: 
             return{
                 ...state,
-                username: action.payload
+                username: action.payload,
+                errors: {
+                    ...state.errors,
+                    username: EMPTY_STR
+                }
             }
         case USER_FIRST_NAME_CHANGED:
             return{
                 ...state,
-                firstName: action.payload
+                firstName: action.payload,
+                errors:{
+                    ...state.errors,
+                    firstName: EMPTY_STR
+                }
             }
         case USER_LAST_NAME_CHANGED:
             return{
                 ...state,
-                lastName: action.payload
+                lastName: action.payload,
+                errors: {
+                    ...state.errors,
+                    lastName: EMPTY_STR
+                }
             }
         case USER_PICTURE_CHANGED:
             return{
@@ -81,6 +97,7 @@ export default (state = initialState, action)=>{
                 ...state,
                 uploadingProfile: true,
                 errors:{
+                    ...state.errors,
                     profile: EMPTY_STR
                 }
             }
@@ -89,6 +106,7 @@ export default (state = initialState, action)=>{
                 ...state,
                 uploadingProfile: false,
                 errors: {
+                    ...state.errors,
                     profile: action.payload.profile
                 }
             }
@@ -98,23 +116,36 @@ export default (state = initialState, action)=>{
                 uploadingProfile: false,
                 profile: action.payload,
                 errors: {
+                    ...state.errors,
                     profile: EMPTY_STR
                 }
             }
         case CANCEL_UPLOAD_PROFILE:
             return{
                 ...state,
-                profile: action.payload
+                profile: action.payload,
+                errors: {
+                    ...state.errors,
+                    profile: EMPTY_STR
+                }
             }
         case BIRTH_DATE_CHANGED: 
             return{
                 ...state,
-                birthDate: action.payload
+                birthDate: action.payload,
+                errors: {
+                    ...state.errors,
+                    birthDate: EMPTY_STR
+                }
             }
         case PASSWORD_CHANGED:
             return{
                 ...state,
-                password: action.payload
+                password: action.payload,
+                errors: {
+                    ...state.errors,
+                    password: EMPTY_STR
+                }
             }
         case REGISTER_BUTTON_TOGGLE:
             return{
@@ -163,9 +194,7 @@ export default (state = initialState, action)=>{
                     email: action.payload.errors.email,
                     username: action.payload.errors.username,
                     profile: action.payload.errors.profile,
-                    birthMonth: action.payload.errors.birthMonth,
-                    birthDate: action.payload.errors.birthDate,
-                    birthYear: action.payload.errors.birthYear
+                    birthDate: action.payload.errors.birthDate
                 }
             }
         case REGISTER_SUCCESS:

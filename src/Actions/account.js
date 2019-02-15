@@ -84,7 +84,7 @@ export const attemptUploadUserProfile = (data)=>{
         });
         let inputErr = {profile: EMPTY_STR};
         if(!data.type.includes('image')){
-            inputErr.profile = 'Wrong file format uploaded.';
+            inputErr.profile = 'Wrong file format uploaded. Must be an image.';
             failedUploadUserProfile(dispatch, inputErr);
         }else{
             let reader = new FileReader();
@@ -196,8 +196,9 @@ export const register = (data)=>{
             firstName: EMPTY_STR,
             lastName: EMPTY_STR,
             email: EMPTY_STR,
-            birthDate: DEFAULT_NUM
+            birthDate: EMPTY_STR
         }
+        let dateRegex = /^\d{4}-\d{2}-\d{2}$/;
         if(data.username === undefined || data.username === null || data.username.trim() === ''){
             inputErrs.username = 'You must enter a valid username. Your username cannot contain whitespace.';
         }
@@ -222,7 +223,7 @@ export const register = (data)=>{
         else if(data.password.length < 6){
             inputErrs.password = 'Your password must be at least 6 characters.';
         }
-        if(data.birthDate === undefined || data.birthDate === null){
+        if(data.birthDate === undefined || data.birthDate === null || data.birthDate === DEFAULT_NUM || !dateRegex.test(data.birthDate)){
             inputErrs.birthDate = 'You must enter a valid birth date.';
         }
         let formData = {
@@ -231,9 +232,7 @@ export const register = (data)=>{
             firstName: data.firstName,
             lastName: data.lastName,
             password: data.password,
-            birthMonth: data.birthMonth,
             birthDate: data.birthDate,
-            birthYear: data.birthYear,
             profileStr: null
         }
         let errorExists = false;
@@ -251,9 +250,8 @@ export const register = (data)=>{
             registerSuccess(dispatch, res.data);
         })
         .catch(err => {
-            console.log(err);
             let failData = {
-                statusMessage: err.response.data.statusMessage,
+                statusMessage: (err.response !== undefined ? err.response.data.statusMessage : 'No internet connection'),
                 errors: inputErrs
             };
             registerFailure(dispatch, failData);
