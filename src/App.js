@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import {Provider} from 'react-redux';
 import {BrowserRouter as Router, Route, Switch, Link, withRouter} from 'react-router-dom';
-import MenuIcon from '@material-ui/icons/Menu';
-import IconButton from '@material-ui/core/IconButton';
 import Home from './Components/Home/Home';
 import Navbar from './Components/Navbar/Navbar';
 import Sidenav from './Components/Sidenav/Sidenav';
@@ -10,8 +8,6 @@ import store from './store';
 import './App.css';
 import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles';
 import Footer from './Components/Footer/Footer';
-import { AppBar, Toolbar, Drawer, Typography, List, ListItem, ListItemText, ListItemIcon, Icon } from '@material-ui/core';
-import {Home as HomeIcon} from '@material-ui/icons' ;
 import Login from './Components/Login/Login';
 import Register from './Components/Register/Register';
 import Aux from './HOC/AuxHOC';

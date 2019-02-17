@@ -5,14 +5,19 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import {connect} from 'react-redux';
+import Snackbar from '@material-ui/core/Snackbar';
+import CloseIcon from '@material-ui/icons/Close';
 import {
     loginButtonToggle,
     loginFailure,
     loginSuccess,
     passwordChanged,
-    usernameChanged
+    usernameChanged,
+    resetUserStatusMessage
 } from '../../Actions/Account';
+import {EMPTY_STR} from '../../constants';
 
 class Login extends PureComponent{
     onUsernameChanged(e){
@@ -21,11 +26,29 @@ class Login extends PureComponent{
     onPasswordChanged(e){
         this.props.passwordChanged(e.target.value);
     }
+    onCloseUserSnackbar(e){
+        this.props.resetUserStatusMessage(EMPTY_STR);
+    }
     render(){
         return(
             <div className='login'>
+                <Snackbar
+                    open={this.props.statusMessage !== EMPTY_STR}
+                    anchorOrigin={{horizontal:'right', vertical: 'top'}}
+                    message={this.props.statusMessage}
+                    action={
+                        <IconButton 
+                            key='snackbar-close'
+                            aria-label='Close'
+                            onClick={this.onCloseUserSnackbar.bind(this)}
+                            color='inherit'
+                        >
+                            <CloseIcon />
+                        </IconButton>
+                    }
+                />
                 <Grid container direction='row' wrap='wrap' justify='center' alignContent='center' alignItems='center' className='min-100vh'>
-                    <Grid item direction='column' xs={12} md={10} lg={8} xl={6}>
+                    <Grid item xs={12} md={10} lg={8} xl={6}>
                         <Paper elevation={16} square className='px-3 py-2'>
                             <Typography variant='display1' align='center'>Login</Typography>
                             <hr className='my-2'/>
@@ -67,5 +90,6 @@ export default connect(mapStateToProps, {
     loginFailure,
     loginSuccess,
     passwordChanged,
-    usernameChanged
+    usernameChanged,
+    resetUserStatusMessage
 })(Login);

@@ -18,7 +18,8 @@ import {
     USER_PICTURE_CHANGED_FAILURE,
     USER_PICTURE_CHANGED_SUCCESS,
     USER_PICTURE_UPLOAD_ATTEMPT,
-    CANCEL_UPLOAD_PROFILE
+    CANCEL_UPLOAD_PROFILE,
+    RESET_USER_STATUS_MESSAGE
 } from './types';
 import { HOST, EMPTY_STR, DEFAULT_NUM } from '../constants';
 
@@ -171,8 +172,9 @@ export const loginFailure = (dispatch, data)=>{
 export const registerSuccess = (dispatch, data)=>{
     dispatch({
         type: REGISTER_SUCCESS,
-        payload: data
+        payload: data.resData
     });
+    data.history.push('/login');
 }
 export const registerFailure = (dispatch, data)=>{
     dispatch({
@@ -233,11 +235,12 @@ export const register = (data)=>{
             lastName: data.lastName,
             password: data.password,
             birthDate: data.birthDate,
-            profileStr: null
+            profileStr: (data.profile !== EMPTY_STR ? data.profile : null)
         }
         let errorExists = false;
         Object.keys(inputErrs).every((k)=>{
-            if(inputErrs[k] !== null){
+            if(inputErrs[k] !== EMPTY_STR){
+                errorExists = true;
                 let failData = {
                     statusMessage: 'Please fill out all required fields with valid entries.',
                     errors: inputErrs
@@ -245,16 +248,28 @@ export const register = (data)=>{
                 registerFailure(dispatch, failData);
             }
         });
-        axios.post(`${HOST}/api/users/register`, formData)
-        .then(res =>{
-            registerSuccess(dispatch, res.data);
-        })
-        .catch(err => {
-            let failData = {
-                statusMessage: (err.response !== undefined ? err.response.data.statusMessage : 'No internet connection'),
-                errors: inputErrs
-            };
-            registerFailure(dispatch, failData);
-        });
+        if(!errorExists){
+            axios.post(`${HOST}/api/users/register`, formData)
+            .then(res =>{
+                let successData = {
+                    resData: res.data,
+                    history: data.history
+                }
+                registerSuccess(dispatch, successData);
+            })
+            .catch(err => {
+                let failData = {
+                    statusMessage: (err.response !== undefined ? err.response.data.statusMessage : 'No internet connection'),
+                    errors: inputErrs
+                };
+                registerFailure(dispatch, failData);
+            });
+        }
+    }
+}
+export const resetUserStatusMessage = (data) =>{
+    return{
+        type: RESET_USER_STATUS_MESSAGE,
+        payload: data
     }
 }

@@ -17,7 +17,8 @@ import {
     USER_PICTURE_CHANGED_FAILURE,
     USER_PICTURE_CHANGED_SUCCESS,
     USER_PICTURE_UPLOAD_ATTEMPT,
-    CANCEL_UPLOAD_PROFILE
+    CANCEL_UPLOAD_PROFILE,
+    RESET_USER_STATUS_MESSAGE
 } from '../Actions/types';
 import Cookies from 'universal-cookie';
 import {
@@ -201,7 +202,19 @@ export default (state = initialState, action)=>{
             return{
                 ...state,
                 registering: false,
-                statusMessage: action.payload.statusMessage
+                statusMessage: action.payload.statusMessage + '. Please log in.',
+                email: EMPTY_STR,
+                lastName: EMPTY_STR,
+                firstName: EMPTY_STR,
+                username: EMPTY_STR,
+                password: EMPTY_STR,
+                profile: EMPTY_STR,
+                birthDate: DEFAULT_NUM
+            }
+        case RESET_USER_STATUS_MESSAGE:
+            return{
+                ...state,
+                statusMessage: action.payload
             }
         default: return state;
     }

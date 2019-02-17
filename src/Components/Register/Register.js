@@ -5,6 +5,7 @@ import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Modal from '@material-ui/core/Modal';
@@ -13,6 +14,7 @@ import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Snackbar from '@material-ui/core/Snackbar';
+import CloseIcon from '@material-ui/icons/Close';
 import {
     emailChanged,
     firstNameChanged,
@@ -24,7 +26,8 @@ import {
     attemptUploadUserProfile,
     cancelUploadProfile,
     register,
-    registerButtonToggle
+    registerButtonToggle,
+    resetUserStatusMessage
 } from '../../Actions/Account';
 import { EMPTY_STR } from '../../constants';
 class Register extends Component{
@@ -90,9 +93,13 @@ class Register extends Component{
             birthDate: this.props.birthDate,
             username: this.props.username,
             password: this.props.password,
-            profile: (this.props.profile !== EMPTY_STR ? this.props.profile.fileData : null)
+            profile: (this.props.profile !== EMPTY_STR ? this.props.profile.fileData : null),
+            history: this.props.history
         }
         this.props.register(data);
+    }
+    onCloseUserSnackbar(e){
+        this.props.resetUserStatusMessage(EMPTY_STR);
     }
     render(){
         return(
@@ -110,6 +117,16 @@ class Register extends Component{
                 open={this.props.statusMessage !== EMPTY_STR}
                 anchorOrigin={{horizontal:'right', vertical: 'top'}}
                 message={this.props.statusMessage}
+                action={
+                    <IconButton 
+                        key='snackbar-close'
+                        aria-label='Close'
+                        onClick={this.onCloseUserSnackbar.bind(this)}
+                        color='inherit'
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                }
             />
             <Modal
                 className='modal-container'
@@ -264,5 +281,6 @@ export default connect(mapStateToProps,{
     cancelUploadProfile,
     birthDateChanged,
     register,
-    registerButtonToggle
+    registerButtonToggle,
+    resetUserStatusMessage
 })(Register);
