@@ -39,6 +39,7 @@ const initialState = {
     loginButtonVisible: false,
     statusMessage: EMPTY_STR,
     uploadingProfile: false,
+    authenticated: localStorage.getItem('token') !== undefined && localStorage.getItem('token') !== null && localStorage.getItem('token') !== EMPTY_STR ? true : false,
     errors:{
         username: EMPTY_STR,
         email: EMPTY_STR,
@@ -169,13 +170,22 @@ export default (state = initialState, action)=>{
                 loggingIn: false,
                 statusMessage: action.payload,
                 username: EMPTY_STR,
-                password: EMPTY_STR
+                password: EMPTY_STR,
+                errors: {
+                    username: EMPTY_STR,
+                    password: EMPTY_STR
+                },
+                authenticated: true
             }
         case LOGIN_FAILURE:
             return{
                 ...state,
                 loggingIn: false,
-                statusMessage: action.payload
+                statusMessage: action.payload.statusMessage,
+                errors:{
+                    username: action.payload.errors.username,
+                    password: action.payload.errors.password
+                }
             }
         case REGISTER_ATTEMPT:
             return{
@@ -209,7 +219,16 @@ export default (state = initialState, action)=>{
                 username: EMPTY_STR,
                 password: EMPTY_STR,
                 profile: EMPTY_STR,
-                birthDate: DEFAULT_NUM
+                birthDate: DEFAULT_NUM,
+                errors: {
+                    firstName: EMPTY_STR,
+                    lastName: EMPTY_STR,
+                    password: EMPTY_STR,
+                    email: EMPTY_STR,
+                    username: EMPTY_STR,
+                    profile: EMPTY_STR,
+                    birthDate: EMPTY_STR
+                }
             }
         case RESET_USER_STATUS_MESSAGE:
             return{

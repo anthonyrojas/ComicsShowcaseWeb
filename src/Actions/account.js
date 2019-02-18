@@ -147,21 +147,34 @@ export const login = (data)=>{
         .then(res=>{
             if(res.data.token != null){
                 localStorage.setItem('token', `Bearer ${res.data.token}`);
-                loginSuccess(dispatch, res.data.statusMessage);
+                let successData = {
+                    statusMessage: res.data.successMessage,
+                    history: data.history
+                }
+                loginSuccess(dispatch, successData);
             }else{
-                loginFailure(dispatch, 'Something went wrong. Please try logging in again.');
+                let failData = {
+                    statusMessage: 'Something went wrong. Please try logging in again.',
+                    errors: inputErrs
+                };
+                loginFailure(dispatch, failData);
             }
         })
         .catch(err => {
-            loginFailure(dispatch, err.response.data.statusMessage);
+            let failData = {
+                statusMessage: (err.response !== undefined ? err.response.data.statusMessage : 'Unable to connect to server.'),
+                errors: inputErrs
+            };
+            loginFailure(dispatch, failData);
         });
     }
 }
 export const loginSuccess = (dispatch, data)=>{
     dispatch({
         type: LOGIN_SUCCESS,
-        payload: data
+        payload: data.statusMessage
     });
+    data.history.push('/account');
 }
 export const loginFailure = (dispatch, data)=>{
     dispatch({

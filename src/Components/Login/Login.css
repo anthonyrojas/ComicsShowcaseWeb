@@ -1,8 +1,26 @@
 .login{
     min-height: 100vh;
+    margin-top: 64px;
     background-image: url('../Home/Assets/watchmen-bg.png');
     background-size: cover;
     background-position: center top;
     background-attachment: fixed;
     background-repeat: no-repeat;
+}
+.modal-container{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+}
+.modal-paper{
+    margin: auto !important;
+    padding: 1.5em;
+    text-align: center;
+    background-color: #333;
+}
+@media screen and (max-width: 768px){
+    .login{
+        margin-top: 54px;
+    }
 }

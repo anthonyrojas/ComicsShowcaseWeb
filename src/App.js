@@ -10,7 +10,10 @@ import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles';
 import Footer from './Components/Footer/Footer';
 import Login from './Components/Login/Login';
 import Register from './Components/Register/Register';
+import Account from './Components/Account/Account';
 import Aux from './HOC/AuxHOC';
+import UserAuthRoute from './Commons/UserAuthRoute/UserAuthRoute';
+import PrivateRoute from './Commons/PrivateRoute/PrivateRoute';
 const theme = createMuiTheme({
   palette: {
     type: 'dark',
@@ -52,8 +55,9 @@ class App extends Component {
                 <Sidenav />
                 <Switch>
                   <Route exact path='/' component={Home}></Route>
-                  <Route exact path='/login' component={Login}></Route>
-                  <Route exact path='/register' component={Register}></Route>
+                  <UserAuthRoute path='/login' component={Login} />
+                  <UserAuthRoute path='/register' component={Register} />
+                  <PrivateRoute path='/account' component={Account} />
                 </Switch>
               </Aux>
             </Router>
