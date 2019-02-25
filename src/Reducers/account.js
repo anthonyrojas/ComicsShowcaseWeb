@@ -18,7 +18,11 @@ import {
     USER_PICTURE_CHANGED_SUCCESS,
     USER_PICTURE_UPLOAD_ATTEMPT,
     CANCEL_UPLOAD_PROFILE,
-    RESET_USER_STATUS_MESSAGE
+    RESET_USER_STATUS_MESSAGE,
+    AUTH_FAILED,
+    GET_ACCOUNT_ATTEMPT,
+    GET_ACCOUNT_SUCCESS,
+    GET_ACCOUNT_FAILED
 } from '../Actions/types';
 import Cookies from 'universal-cookie';
 import {
@@ -48,7 +52,10 @@ const initialState = {
         lastName: EMPTY_STR,
         profile: EMPTY_STR,
         birthDate: EMPTY_STR,
-    }
+    },
+    account: EMPTY_STR,
+    accountErr: EMPTY_STR,
+    fetchingAccount: true
 }
 
 export default (state = initialState, action)=>{
@@ -234,6 +241,31 @@ export default (state = initialState, action)=>{
             return{
                 ...state,
                 statusMessage: action.payload
+            }
+        case AUTH_FAILED:
+            return{
+                ...state,
+                authenticated: false,
+                statusMessage: action.payload.statusMessage
+            }
+        case GET_ACCOUNT_ATTEMPT:
+            return{
+                ...state,
+                fetchingAccount: action.payload
+            }
+        case GET_ACCOUNT_SUCCESS:
+            return{
+                ...state,
+                fetchingAccount: false,
+                account: action.payload.user,
+                accountErr: EMPTY_STR
+            }
+        case GET_ACCOUNT_FAILED:
+            return{
+                ...state,
+                fetchingAccount: false,
+                account: EMPTY_STR,
+                accountErr: action.payload
             }
         default: return state;
     }

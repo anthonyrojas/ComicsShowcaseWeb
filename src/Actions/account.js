@@ -19,7 +19,11 @@ import {
     USER_PICTURE_CHANGED_SUCCESS,
     USER_PICTURE_UPLOAD_ATTEMPT,
     CANCEL_UPLOAD_PROFILE,
-    RESET_USER_STATUS_MESSAGE
+    RESET_USER_STATUS_MESSAGE,
+    GET_ACCOUNT_ATTEMPT,
+    GET_ACCOUNT_FAILED,
+    AUTH_FAILED,
+    GET_ACCOUNT_SUCCESS
 } from './types';
 import { HOST, EMPTY_STR, DEFAULT_NUM } from '../constants';
 
@@ -285,4 +289,52 @@ export const resetUserStatusMessage = (data) =>{
         type: RESET_USER_STATUS_MESSAGE,
         payload: data
     }
+}
+export const redirectToLogin = (dispatch, data)=>{
+    dispatch({
+        type: AUTH_FAILED,
+        payload: {
+            statusMessage: 'Please login.'
+        }
+    });
+    data.history.push('/login');
+}
+export const getAccountAttempt = (data) =>{
+    return(dispatch)=>{
+        if(localStorage.getItem('token') === undefined || localStorage.getItem('token') === EMPTY_STR){
+            let authFailData = {
+                history: data.history
+            };
+            redirectToLogin(dispatch, authFailData);
+        }
+        dispatch({
+            type: GET_ACCOUNT_ATTEMPT,
+            payload: data
+        });
+        let auth = {
+            headers: {
+                Authorization : `${localStorage.getItem('token')}`
+            }
+        };
+        axios.get(`${HOST}/api/users/account`, auth)
+        .then(res=>{
+            getAccountSuccess(dispatch, res.data);
+        })
+        .catch(err=>{
+            let failData = (err.response !== undefined ? err.response.data.statusMessage : 'No internet connection');
+            getAccountFailed(dispatch, failData);
+        });
+    }
+}
+export const getAccountFailed = (dispatch, data)=>{
+    dispatch({
+        type: GET_ACCOUNT_FAILED,
+        payload: data
+    });
+}
+export const getAccountSuccess=(dispatch, data)=>{
+    dispatch({
+        type: GET_ACCOUNT_SUCCESS,
+        payload: data
+    });
 }

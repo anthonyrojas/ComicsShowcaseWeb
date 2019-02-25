@@ -1,0 +1,9 @@
+.account{
+    margin-top: 64px;
+    background: linear-gradient(to right, #396afc, #2948ff);
+}
+@media screen and (max-width: 768px){
+    .account{
+        margin-top: 54px;
+    }
+}

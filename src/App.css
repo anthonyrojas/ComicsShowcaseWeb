@@ -231,3 +231,15 @@ body{
 .text-white{
     color: #FFF;
 }
+.modal-container{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+}
+.modal-paper{
+    margin: auto !important;
+    padding: 1.5em;
+    text-align: center;
+    background-color: #333;
+}
