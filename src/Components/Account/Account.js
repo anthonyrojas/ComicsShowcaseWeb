@@ -11,56 +11,78 @@ import {
     getAccountFailed,
     getAccountSuccess
 } from '../../Actions/Account';
+import { EMPTY_STR } from '../../constants';
 class Account extends Component{
     componentDidMount(){
         this.props.getAccountAttempt(true);
     }
     render(){
         return(
-            <div className='account'>
+            <div className='account min-80vh'>
                 <Grid container
                     direction='row'
                     wrap='wrap'
                     alignContent='center'
                     alignItems='center'
                     justify='center'
+                    className='py-4 h-100'
                 >
+                <Grid item xs={12} sm={12} md={10} lg={8} className='h-100'>
                     <Paper
                         elevation={16}
-                        className='px-3 py-2'
+                        className='px-3 py-2 h-100'
                     >
                     {
                         this.props.fetchingAccount 
                         ? 
                         <React.Fragment>
-                            <Grid item xs={12} className='mb-4'>
-                                <CircularProgress color='primary'/>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Typography variant='subheading' align='center'>
-                                Fetching Account Info...
-                                </Typography>
+                            <Grid container 
+                                direction='column' 
+                                wrap='wrap'
+                                justify='center'
+                                alignItems='center'
+                            >
+                                <Grid item xs={12} className='mb-4'>
+                                    <CircularProgress color='primary'/>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography variant='subheading' align='center'>
+                                    Fetching Account Info...
+                                    </Typography>
+                                </Grid>
                             </Grid>
                         </React.Fragment>
                         :
                         <React.Fragment>
-                            <Grid item
-                                xs={12}
-                                md={6}
-                            >
-                                <img src={this.props.account.profileStr} alt='account profile' />
-                            </Grid>
-                            <Grid item
-                                xs={12}
-                                md={6}
-                            >
-                                <Typography variant='subheading' align='center'>
-                                {this.props.account.username}
-                                </Typography>
-                            </Grid>
+                            {
+                                this.props.accountErr !== EMPTY_STR ? 
+                                <Grid item xs={12}>
+                                    <Typography variant='title' color='error' align='center'>
+                                    {this.props.accountErr}
+                                    </Typography>
+                                </Grid>
+                                :
+                                <React.Fragment>
+                                <Grid item
+                                    xs={12}
+                                    md={6}
+                                >
+                                    <img src={this.props.account.profileStr} alt='account profile' />
+                                </Grid>
+                                <Grid item
+                                    xs={12}
+                                    md={6}
+                                >
+                                    <Typography variant='subheading' align='center'>
+                                    {this.props.account.username}
+                                    </Typography>
+                                </Grid>
+                                </React.Fragment>
+                            }
                         </React.Fragment>
                     }
                     </Paper>
+                    </Grid>
                 </Grid>
             </div>
         );
