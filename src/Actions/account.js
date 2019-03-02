@@ -23,7 +23,12 @@ import {
     GET_ACCOUNT_ATTEMPT,
     GET_ACCOUNT_FAILED,
     AUTH_FAILED,
-    GET_ACCOUNT_SUCCESS
+    GET_ACCOUNT_SUCCESS,
+    EDIT_ACCOUNT,
+    UPDATE_ACCOUNT_ATTEMPT,
+    UPDATE_ACCOUNT_FAILURE,
+    UPDATE_ACCOUNT_SUCCESS,
+    CLOSE_EDIT_ACCOUNT
 } from './types';
 import { HOST, EMPTY_STR, DEFAULT_NUM } from '../constants';
 
@@ -299,11 +304,119 @@ export const redirectToLogin = (dispatch, data)=>{
     });
     data.history.push('/login');
 }
+export const updateAccount = (data) =>{
+    return(dispatch)=>{
+        dispatch({
+            type: UPDATE_ACCOUNT_ATTEMPT,
+            payload: {
+                updatingAccount: true
+            }
+        });
+        let inputErrs = {
+            username: EMPTY_STR,
+            password: EMPTY_STR,
+            profile: EMPTY_STR,
+            firstName: EMPTY_STR,
+            lastName: EMPTY_STR,
+            email: EMPTY_STR,
+            birthDate: EMPTY_STR
+        }
+        let dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        if(data.username === undefined || data.username === null || data.username.trim() === ''){
+            inputErrs.username = 'You must enter a valid username. Your username cannot contain whitespace.';
+        }
+        else if(data.username.trim().length > 5 && /\s/.test(data.username)){
+            inputErrs.username = 'Your username must be more than 5 characters long and cannot contain whitespace.';
+        }
+        if(data.email === undefined || data.email === null || data.email.trim() === ''){
+            inputErrs.email = 'Your must enter your email address.'
+        }
+        else if(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(data.email) === false){
+            inputErrs.email = 'You must enter a valid email address.';
+        }
+        if(data.firstName === undefined || data.firstName === null || data.firstName.trim() === ''){
+            inputErrs.firstName = 'You must enter your first name.';
+        }
+        if(data.lastName === undefined || data.firstName === null || data.firstName.trim() === ''){
+            inputErrs.lastName = 'You must enter your last name.';
+        }
+        if(data.password === undefined || data.password === null || data.password === ''){
+            inputErrs.password = 'You must enter a valid password';
+        }
+        else if(data.password.length < 6){
+            inputErrs.password = 'Your password must be at least 6 characters.';
+        }
+        if(data.birthDate === undefined || data.birthDate === null || data.birthDate === DEFAULT_NUM || !dateRegex.test(data.birthDate)){
+            inputErrs.birthDate = 'You must enter a valid birth date.';
+        }
+        let formData = {
+            id: data.id,
+            username: data.username,
+            email: data.email,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            password: data.password,
+            birthDate: data.birthDate,
+            profileStr: (data.profile !== EMPTY_STR ? data.profile : null)
+        }
+        let errorExists = false;
+        Object.keys(inputErrs).every((k)=>{
+            if(inputErrs[k] !== EMPTY_STR){
+                errorExists = true;
+                let failData = {
+                    statusMessage: 'Please fill out all required fields with valid entries.',
+                    errors: inputErrs
+                }
+                registerFailure(dispatch, failData);
+            }
+        });
+        if(!errorExists){
+            if(localStorage.getItem('token') === undefined || localStorage.getItem('token') === null){
+                let authFailData = {
+                    history: data.history
+                }
+                redirectToLogin(dispatch, authFailData);
+            }
+            let config = {
+                headers: {
+                    Authorization : `${localStorage.getItem('token')}`
+                }
+            };
+            axios.put(`${HOST}/api/users/account`, formData, config)
+            .then(res =>{
+                let successData = {
+                    resData: res.data,
+                    history: data.history
+                }
+                updateAccountSuccess(dispatch, successData);
+            })
+            .catch(err => {
+                let failData = {
+                    statusMessage: (err.response !== undefined ? err.response.data.statusMessage : 'No internet connection'),
+                    errors: inputErrs
+                };
+                updateAccountFailure(dispatch, failData);
+            });
+        }
+    }
+}
+export const updateAccountSuccess = (dispatch, data) => {
+    dispatch({
+        type: UPDATE_ACCOUNT_SUCCESS,
+        payload: data.resData
+    })
+}
+export const updateAccountFailure = (dispatch, data) => {
+    dispatch({
+        type: UPDATE_ACCOUNT_FAILURE,
+        payload: data
+    })
+}
 export const getAccountAttempt = (data) =>{
     return(dispatch)=>{
         if(localStorage.getItem('token') === undefined || localStorage.getItem('token') === EMPTY_STR){
             let authFailData = {
-                history: data.history
+                history: data.history,
             };
             redirectToLogin(dispatch, authFailData);
         }
@@ -337,4 +450,16 @@ export const getAccountSuccess=(dispatch, data)=>{
         type: GET_ACCOUNT_SUCCESS,
         payload: data
     });
+}
+export const openEditAccount=(data)=>{
+    return{
+        type: EDIT_ACCOUNT,
+        payload: data
+    };
+}
+export const closeEditAccount = (data) => {
+    return{
+        type: CLOSE_EDIT_ACCOUNT,
+        payload: data
+    }
 }

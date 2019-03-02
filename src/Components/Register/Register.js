@@ -211,7 +211,7 @@ class Register extends Component{
                                     alignItems='center' 
                                     className='grid-item-centered-w-padding'
                                 >
-                                    <input type='file' style={{display: 'none'}} id='upload-picture-input' onChange={this.onFileUpload.bind(this)} ref={(fileUpload) => this.fileUpload = fileUpload}/>
+                                    <input type='file' className='file-upload-input' id='upload-picture-input' onChange={this.onFileUpload.bind(this)} ref={(fileUpload) => this.fileUpload = fileUpload}/>
                                     <Button variant='contained' color='default' onClick={()=>this.fileUpload.click()}>Upload Picture &nbsp; <CloudUploadIcon /></Button>
                                     {
                                         this.props.errors.profile !== EMPTY_STR ? 

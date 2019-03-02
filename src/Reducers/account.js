@@ -22,7 +22,12 @@ import {
     AUTH_FAILED,
     GET_ACCOUNT_ATTEMPT,
     GET_ACCOUNT_SUCCESS,
-    GET_ACCOUNT_FAILED
+    GET_ACCOUNT_FAILED,
+    EDIT_ACCOUNT,
+    UPDATE_ACCOUNT_ATTEMPT,
+    UPDATE_ACCOUNT_FAILURE,
+    UPDATE_ACCOUNT_SUCCESS,
+    CLOSE_EDIT_ACCOUNT
 } from '../Actions/types';
 import Cookies from 'universal-cookie';
 import {
@@ -55,7 +60,9 @@ const initialState = {
     },
     account: EMPTY_STR,
     accountErr: EMPTY_STR,
-    fetchingAccount: true
+    fetchingAccount: true,
+    editAccount: false,
+    updatingAccount: false
 }
 
 export default (state = initialState, action)=>{
@@ -251,6 +258,7 @@ export default (state = initialState, action)=>{
         case GET_ACCOUNT_ATTEMPT:
             return{
                 ...state,
+                editAccount: false,
                 fetchingAccount: action.payload
             }
         case GET_ACCOUNT_SUCCESS:
@@ -266,6 +274,68 @@ export default (state = initialState, action)=>{
                 fetchingAccount: false,
                 account: EMPTY_STR,
                 accountErr: action.payload
+            }
+        case EDIT_ACCOUNT:
+            return{
+                ...state,
+                editAccount: true,
+                username: action.payload.username,
+                email: action.payload.email,
+                firstName: action.payload.firstName,
+                lastName: action.payload.lastName,
+                birthDate: action.payload.birthDate,
+                profile: {
+                    fileData: action.payload.profileStr
+                }
+            }
+        case CLOSE_EDIT_ACCOUNT: 
+            return{
+                ...state,
+                editAccount: action.payload
+            }
+        case UPDATE_ACCOUNT_ATTEMPT:
+            return{
+                ...state,
+                updatingAccount: action.payload.updatingAccount
+            }
+        case UPDATE_ACCOUNT_SUCCESS:
+            return{
+                ...state,
+                updatingAccount: false,
+                editAccount: false,
+                account: action.payload.user,
+                statusMessage: action.payload.statusMessage,
+                email: EMPTY_STR,
+                lastName: EMPTY_STR,
+                firstName: EMPTY_STR,
+                username: EMPTY_STR,
+                password: EMPTY_STR,
+                profile: EMPTY_STR,
+                birthDate: DEFAULT_NUM,
+                errors: {
+                    username: EMPTY_STR,
+                    email: EMPTY_STR,
+                    firstName: EMPTY_STR,
+                    lastName: EMPTY_STR,
+                    password: EMPTY_STR,
+                    birthDate: EMPTY_STR,
+                    profile: EMPTY_STR
+                }
+            }
+        case UPDATE_ACCOUNT_FAILURE:
+            return{
+                ...state,
+                updatingAccount: false,
+                statusMessage: action.payload.statusMessage,
+                errors:{
+                    firstName: action.payload.errors.firstName,
+                    lastName: action.payload.errors.lastName,
+                    password: action.payload.errors.password,
+                    email: action.payload.errors.email,
+                    username: action.payload.errors.username,
+                    profile: action.payload.errors.profile,
+                    birthDate: action.payload.errors.birthDate
+                }
             }
         default: return state;
     }

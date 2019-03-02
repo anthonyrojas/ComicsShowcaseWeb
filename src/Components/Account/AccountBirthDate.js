@@ -1,27 +1,43 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {
-    usernameChanged
+    birthDateChanged
 } from '../../Actions/Account';
 import './Account.css';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-class AccountUsername extends Component{
-    onChangeUsername(e){
-        this.props.usernameChanged(e.target.value);
+class AccountBirthDate extends Component{
+    onBirthDateChanged(e){
+        this.props.birthDateChanged(e.target.value);
     }
     render(){
+        let jsDate = new Date(this.props.accountBirthDate);
+        const monthNames = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        ];
         return(
             <React.Fragment>
             {
                 this.props.editAccount ?
                 <TextField 
-                    value={this.props.username} 
-                    onChange={this.onChangeUsername.bind(this)} 
+                    value={this.props.birthDate} 
+                    onChange={this.onBirthDateChanged.bind(this)} 
+                    type='date' 
+                    label='Birth Date' 
                     fullWidth 
-                    label='Username' 
                     variant='filled' 
-                    className='mb-1'
+                    className='my-1'
                     required
                 />
                 :
@@ -30,13 +46,13 @@ class AccountUsername extends Component{
                         variant='caption' 
                         className='text-underline'
                     >
-                        Username
+                        Birth Date
                     </Typography>
                     <Typography 
-                        variant='display1'
-                        className='mb-half text-white'
+                        variant='subheading' 
+                        className='mb-1'
                     >
-                    {this.props.accountUsername}
+                        {`${monthNames[jsDate.getMonth()]} ${jsDate.getDate()}, ${jsDate.getFullYear()}`}
                     </Typography>
                 </React.Fragment>
             }
@@ -45,9 +61,9 @@ class AccountUsername extends Component{
     }
 }
 const mapStateToProps = state =>({
-    username: state.account.username,
+    birthDate: state.account.birthDate,
     editAccount: state.account.editAccount
 });
 export default connect(mapStateToProps,{
-    usernameChanged
-})(AccountUsername);
+    birthDateChanged
+})(AccountBirthDate);
