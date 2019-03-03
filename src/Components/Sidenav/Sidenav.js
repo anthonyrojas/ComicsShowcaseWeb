@@ -3,7 +3,15 @@ import {Drawer, List, ListItemIcon, ListItemText, Icon, ListItem} from '@materia
 import {Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {toggleSidenav} from '../../Actions/Nav';
+import {
+    logout
+} from '../../Actions/Account';
 class Sidenav extends Component{
+    onClickLogout(e){
+        e.preventDefault();
+        this.props.logout(false);
+        this.props.history.push('/login');
+    }
     render(){
         return(
             <Drawer open={this.props.navVisibility} onClose={this.props.toggleSidenav}>
@@ -21,18 +29,32 @@ class Sidenav extends Component{
                             <ListItemText primary='Home'></ListItemText>
                         </ListItem>
                     </Link>
-                    <Link style={{textDecoration: 'none'}} to='/login'>
-                        <ListItem button>
-                            <ListItemIcon><Icon>account_circle</Icon></ListItemIcon>
-                            <ListItemText primary='Login'></ListItemText>
-                        </ListItem>
-                    </Link>
-                    <Link style={{textDecoration: 'none'}} to='/register'>
-                        <ListItem button>
-                            <ListItemIcon><Icon>person_add</Icon></ListItemIcon>
-                            <ListItemText primary='Register'></ListItemText>
-                        </ListItem>
-                    </Link>
+                    {
+                        !this.props.authenticated ? 
+                        <React.Fragment>
+                            <Link style={{textDecoration: 'none'}} to='/login'>
+                                <ListItem button>
+                                    <ListItemIcon><Icon>account_circle</Icon></ListItemIcon>
+                                    <ListItemText primary='Login'></ListItemText>
+                                </ListItem>
+                            </Link>
+                            <Link style={{textDecoration: 'none'}} to='/register'>
+                                <ListItem button>
+                                    <ListItemIcon><Icon>person_add</Icon></ListItemIcon>
+                                    <ListItemText primary='Register'></ListItemText>
+                                </ListItem>
+                            </Link>
+                        </React.Fragment>
+                        :
+                        <React.Fragment>
+                            <Link style={{textDecoration: 'none'}} to='#' onClick={this.onClickLogout.bind(this)}>
+                                <ListItem button>
+                                    <ListItemIcon><Icon>exit_to_app</Icon></ListItemIcon>
+                                    <ListItemText primary='Logout'></ListItemText>
+                                </ListItem>
+                            </Link>
+                        </React.Fragment>
+                    }
                 </List>
                 </div>
             </Drawer>
@@ -40,8 +62,10 @@ class Sidenav extends Component{
     }
 }
 const mapStateToProps = state =>({
-    navVisibility: state.nav.navVisibility
+    navVisibility: state.nav.navVisibility,
+    authenticated: state.account.authenticated
 });
 export default withRouter(connect(mapStateToProps, {
-    toggleSidenav
+    toggleSidenav,
+    logout
 })(Sidenav));

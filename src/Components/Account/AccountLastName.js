@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import './Account.css';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import { EMPTY_STR } from '../../constants';
 class AccountLastName extends Component {
     onChangeLastName(e){
         this.props.lastNameChanged(e.target.value);
@@ -23,6 +24,8 @@ class AccountLastName extends Component {
                     variant='filled' 
                     className='my-1'
                     required
+                    error={this.props.lastNameErr !== EMPTY_STR}
+                    helperText={this.props.lastNameErr}
                 />
                 :
                 <React.Fragment>
@@ -46,7 +49,8 @@ class AccountLastName extends Component {
 }
 const mapStateToProps = state =>({
     lastName: state.account.lastName,
-    editAccount: state.account.editAccount
+    editAccount: state.account.editAccount,
+    lastNameErr: state.account.errors.lastName
 });
 export default connect(mapStateToProps,{
     lastNameChanged

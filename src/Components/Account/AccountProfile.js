@@ -43,6 +43,7 @@ class AccountProfile extends Component{
                             alt='user profile' 
                             src={this.props.profile.fileData}
                         /> 
+                        <Typography variant='caption' align='center'>{this.props.profileErr}</Typography>
                         <Fab 
                             size='small' 
                             color='secondary' 
@@ -95,7 +96,8 @@ class AccountProfile extends Component{
 const mapStateToProps = state =>({
     profile: state.account.profile,
     uploadingProfile: state.account.uploadingProfile,
-    editAccount: state.account.editAccount
+    editAccount: state.account.editAccount,
+    profileErr: state.account.errors.profile
 });
 export default connect(mapStateToProps,{
     attemptUploadUserProfile,

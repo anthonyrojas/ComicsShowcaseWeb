@@ -28,7 +28,8 @@ import {
     UPDATE_ACCOUNT_ATTEMPT,
     UPDATE_ACCOUNT_FAILURE,
     UPDATE_ACCOUNT_SUCCESS,
-    CLOSE_EDIT_ACCOUNT
+    CLOSE_EDIT_ACCOUNT,
+    LOGOUT_ACCOUNT
 } from './types';
 import { HOST, EMPTY_STR, DEFAULT_NUM } from '../constants';
 
@@ -157,7 +158,7 @@ export const login = (data)=>{
             if(res.data.token != null){
                 localStorage.setItem('token', `Bearer ${res.data.token}`);
                 let successData = {
-                    statusMessage: res.data.successMessage,
+                    statusMessage: res.data.statusMessage,
                     history: data.history
                 }
                 loginSuccess(dispatch, successData);
@@ -170,6 +171,7 @@ export const login = (data)=>{
             }
         })
         .catch(err => {
+            console.log(err);
             let failData = {
                 statusMessage: (err.response !== undefined ? err.response.data.statusMessage : 'Unable to connect to server.'),
                 errors: inputErrs
@@ -238,7 +240,7 @@ export const register = (data)=>{
         if(data.firstName === undefined || data.firstName === null || data.firstName.trim() === ''){
             inputErrs.firstName = 'You must enter your first name.';
         }
-        if(data.lastName === undefined || data.firstName === null || data.firstName.trim() === ''){
+        if(data.lastName === undefined || data.lastName === null || data.lastName.trim() === ''){
             inputErrs.lastName = 'You must enter your last name.';
         }
         if(data.password === undefined || data.password === null || data.password === ''){
@@ -337,15 +339,16 @@ export const updateAccount = (data) =>{
         if(data.firstName === undefined || data.firstName === null || data.firstName.trim() === ''){
             inputErrs.firstName = 'You must enter your first name.';
         }
-        if(data.lastName === undefined || data.firstName === null || data.firstName.trim() === ''){
+        if(data.lastName === undefined || data.lastName === null || data.lastName.trim() === ''){
             inputErrs.lastName = 'You must enter your last name.';
         }
-        if(data.password === undefined || data.password === null || data.password === ''){
-            inputErrs.password = 'You must enter a valid password';
-        }
-        else if(data.password.length < 6){
-            inputErrs.password = 'Your password must be at least 6 characters.';
-        }
+        //password is not required, this can be null or empty and will be populated by the server
+        // if(data.password === undefined || data.password === null || data.password === ''){
+        //     inputErrs.password = 'You must enter a valid password';
+        // }
+        // else if(data.password.length < 6){
+        //     inputErrs.password = 'Your password must be at least 6 characters.';
+        // }
         if(data.birthDate === undefined || data.birthDate === null || data.birthDate === DEFAULT_NUM || !dateRegex.test(data.birthDate)){
             inputErrs.birthDate = 'You must enter a valid birth date.';
         }
@@ -367,7 +370,7 @@ export const updateAccount = (data) =>{
                     statusMessage: 'Please fill out all required fields with valid entries.',
                     errors: inputErrs
                 }
-                registerFailure(dispatch, failData);
+                updateAccountFailure(dispatch, failData);
             }
         });
         if(!errorExists){
@@ -452,6 +455,13 @@ export const getAccountSuccess=(dispatch, data)=>{
     });
 }
 export const openEditAccount=(data)=>{
+    let profileData = EMPTY_STR;
+    if(data.profileStr !== undefined && data.profileStr !== null && data.profileStr !== EMPTY_STR){
+        profileData = {
+            fileData: data.profileStr
+        }
+    }
+    data.profile = profileData;
     return{
         type: EDIT_ACCOUNT,
         payload: data
@@ -460,6 +470,13 @@ export const openEditAccount=(data)=>{
 export const closeEditAccount = (data) => {
     return{
         type: CLOSE_EDIT_ACCOUNT,
+        payload: data
+    }
+}
+export const logout = (data) => {
+    localStorage.removeItem('token');
+    return{
+        type: LOGOUT_ACCOUNT,
         payload: data
     }
 }

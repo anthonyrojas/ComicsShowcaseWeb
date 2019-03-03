@@ -6,6 +6,7 @@ import {
 import './Account.css';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import { EMPTY_STR } from '../../constants';
 class AccountPassword extends Component{
     onChangePassword(e){
         this.props.passwordChanged(e.target.value);
@@ -23,6 +24,9 @@ class AccountPassword extends Component{
                     variant='filled' 
                     className='mb-1'
                     required
+                    type='password'
+                    helperText={this.props.passwordErr}
+                    error={this.props.passwordErr !== EMPTY_STR}
                 />
                 :
                 <React.Fragment>
@@ -47,7 +51,8 @@ class AccountPassword extends Component{
 }
 const mapStateToProps = state =>({
     password: state.account.password,
-    editAccount: state.account.editAccount
+    editAccount: state.account.editAccount,
+    passwordErr: state.account.errors.password
 });
 export default connect(mapStateToProps,{
     passwordChanged

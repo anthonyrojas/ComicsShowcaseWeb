@@ -6,6 +6,7 @@ import {
 import './Account.css';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import { EMPTY_STR } from '../../constants';
 class AccountFirstName extends Component{
     onChangeFirstName(e){
         this.props.firstNameChanged(e.target.value);
@@ -23,6 +24,8 @@ class AccountFirstName extends Component{
                         className='my-1' 
                         onChange={this.onChangeFirstName.bind(this)}
                         required
+                        error={this.props.firstNameErr !== EMPTY_STR}
+                        helperText={this.props.firstNameErr}
                     />
                     :
                     <React.Fragment>
@@ -46,7 +49,8 @@ class AccountFirstName extends Component{
 }
 const mapStateToProps = state =>({
     firstName: state.account.firstName,
-    editAccount: state.account.editAccount
+    editAccount: state.account.editAccount,
+    firstNameErr: state.account.errors.firstName
 });
 export default connect(mapStateToProps,{
     firstNameChanged

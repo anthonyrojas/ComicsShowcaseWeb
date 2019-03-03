@@ -27,7 +27,8 @@ import {
     UPDATE_ACCOUNT_ATTEMPT,
     UPDATE_ACCOUNT_FAILURE,
     UPDATE_ACCOUNT_SUCCESS,
-    CLOSE_EDIT_ACCOUNT
+    CLOSE_EDIT_ACCOUNT,
+    LOGOUT_ACCOUNT
 } from '../Actions/types';
 import Cookies from 'universal-cookie';
 import {
@@ -284,8 +285,15 @@ export default (state = initialState, action)=>{
                 firstName: action.payload.firstName,
                 lastName: action.payload.lastName,
                 birthDate: action.payload.birthDate,
-                profile: {
-                    fileData: action.payload.profileStr
+                profile: action.payload.profile,
+                errors: {
+                    username: EMPTY_STR,
+                    email: EMPTY_STR,
+                    firstName: EMPTY_STR,
+                    lastName: EMPTY_STR,
+                    password: EMPTY_STR,
+                    birthDate: EMPTY_STR,
+                    profile: EMPTY_STR
                 }
             }
         case CLOSE_EDIT_ACCOUNT: 
@@ -336,6 +344,21 @@ export default (state = initialState, action)=>{
                     profile: action.payload.errors.profile,
                     birthDate: action.payload.errors.birthDate
                 }
+            }
+        case LOGOUT_ACCOUNT:
+            return{
+                ...state,
+                authenticated: action.payload,
+                account: EMPTY_STR,
+                accountErr: EMPTY_STR,
+                email: EMPTY_STR,
+                lastName: EMPTY_STR,
+                firstName: EMPTY_STR,
+                username: EMPTY_STR,
+                password: EMPTY_STR,
+                profile: EMPTY_STR,
+                birthDate: DEFAULT_NUM,
+                statusMessage: 'Logged out, come back soon!'
             }
         default: return state;
     }

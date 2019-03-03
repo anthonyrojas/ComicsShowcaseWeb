@@ -6,6 +6,7 @@ import {
 import './Account.css';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import { EMPTY_STR } from '../../constants';
 class AccountBirthDate extends Component{
     onBirthDateChanged(e){
         this.props.birthDateChanged(e.target.value);
@@ -38,6 +39,8 @@ class AccountBirthDate extends Component{
                     fullWidth 
                     variant='filled' 
                     className='my-1'
+                    error={this.props.birthDateErr !== EMPTY_STR}
+                    helperText={this.props.birthDateErr}
                     required
                 />
                 :
@@ -62,7 +65,8 @@ class AccountBirthDate extends Component{
 }
 const mapStateToProps = state =>({
     birthDate: state.account.birthDate,
-    editAccount: state.account.editAccount
+    editAccount: state.account.editAccount,
+    birthDateErr: state.account.errors.birthDate
 });
 export default connect(mapStateToProps,{
     birthDateChanged
