@@ -25,7 +25,7 @@ const home = (props) => (
         <Parallax classes='my-1' image={require('./Assets/watchmen-bg.png')}/>
         <Grid container direction='row' justify='center' alignContent='center' alignItems='center' className='my-3' wrap='wrap' spacing={0}>
             <Grid item xs={12} sm={10} md={8} lg={4} className='px-half py-half'>
-                <Paper className='px-1 py-2 text-center grd-blue-to-green-br' elevation={24} square>
+                <Paper className='px-1 py-2 text-center home-paper' elevation={24} square>
                     <Icon style={{fontSize: 52}} className='i-circle-purple' color='inherit'>library_books</Icon>
                     <Typography variant='headline' align='center' gutterBottom>Display Your Collection</Typography>
                     <hr />
@@ -35,7 +35,7 @@ const home = (props) => (
                 </Paper>
             </Grid>
             <Grid item xs={12} sm={10} md={8} lg={4} className='px-half py-half'>
-                <Paper className='px-1 py-2 text-center grd-blue-to-green-br' elevation={24} square>
+                <Paper className='px-1 py-2 text-center home-paper' elevation={24} square>
                     <Icon style={{fontSize: 52}} className='i-circle-purple' color='inherit'>supervisor_account</Icon>
                     <Typography variant='headline' align='center' gutterBottom>Find/Invite Your Friends</Typography>
                     <hr />
@@ -45,7 +45,7 @@ const home = (props) => (
                 </Paper>
             </Grid>
             <Grid item xs={12} sm={10} md={8} lg={4} className='px-half py-half'>
-                <Paper className='px-1 py-2 text-center grd-blue-to-green-br' elevation={24} square>
+                <Paper className='px-1 py-2 text-center home-paper' elevation={24} square>
                     <Icon style={{fontSize: 52}} className='i-circle-purple' color='inherit'>monetization_on</Icon>
                     <Typography variant='headline' align='center' gutterBottom>Prep Your Sales</Typography>
                     <hr />
