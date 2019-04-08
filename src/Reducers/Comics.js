@@ -19,6 +19,10 @@ import {
 } from '../Actions/types';
 import {EMPTY_ARR, EMPTY_STR, DEFAULT_NUM} from '../constants';
 const initialState = {
+    comicsPaginate: DEFAULT_NUM,
+    comicSkip: DEFAULT_NUM,
+    comicLimit: 10,
+    comicsCount: DEFAULT_NUM,
     comicsLoading: false,
     comicLoading: false,
     comicsList: EMPTY_ARR,
@@ -56,7 +60,8 @@ const initialState = {
         condition: EMPTY_STR,
         user: EMPTY_STR,
         publisher:EMPTY_STR,
-        creators: EMPTY_STR
+        creators: EMPTY_STR,
+        comicConditions: EMPTY_STR
     }
 }
 export default (state = initialState, action)=>{
@@ -79,6 +84,7 @@ export default (state = initialState, action)=>{
             return{
                 ...state,
                 comicsList: action.payload.comics,
+                comicsCount: action.payload.comicsCount,
                 statusMessage: action.payload.statusMessage,
                 comicsLoading: false
             }
@@ -198,13 +204,14 @@ export default (state = initialState, action)=>{
         case GET_COMIC_CONDITIONS_FAILURE:
             return{
                 ...state,
-                comicConditionsLoading: false
+                comicConditionsLoading: false,
+                comicConditions: action.payload
             }
         case GET_COMIC_CONDITIONS_SUCCESS:
             return{
                 ...state,
                 comicConditionsLoading: false,
-                comicConditions: action.payload
+                comicConditions: action.payload.comicsConditions
             }
         default: state
     }

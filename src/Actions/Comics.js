@@ -16,7 +16,9 @@ import {
     COMIC_UPC_CHANGED,
     COMIC_PUBLISHER_CHANGED,
     COMIC_CREATORS_CHANGED,
-    COMIC_CONDITION_CHANGED
+    COMIC_CONDITION_CHANGED,
+    GET_COMIC_CONDITIONS_SUCCESS,
+    GET_COMIC_CONDITIONS_FAILURE
 } from './types';
 import {HOST, EMPTY_ARR, EMPTY_STR} from '../constants';
 
@@ -31,7 +33,7 @@ export const getComicsAttempt = (data)=>{
                 Authorization: localStorage.getItem('token')
             }
         }
-        axios.get(`${HOST}/api/comics/user/${data.userID}`, config)
+        axios.get(`${HOST}/api/comics/user/${data.userID}?limit=15&skip=${data.skipComics}`, config)
         .then(res =>{
             dispatch({
                 type: GET_COMICS_SUCCESS,
@@ -109,7 +111,31 @@ export const getComicAttempt = (data)=>{
         });
     }
 }
-export const getComicConditions = (data)=>{}
+export const getComicConditions = (data)=>{
+    let config = {
+        headers: {
+            Authorization: localStorage.getItem('token')
+        }
+    }
+    axios.get(`${HOST}/api/comics`)
+    .then(res => {
+        dispatch({
+            type: GET_COMIC_CONDITIONS_SUCCESS,
+            payload: res.data
+        });
+    })
+    .catch(err => {
+        let failData = (
+            err.response !== undefined ?
+            err.response.data.statusMessage :
+            'Unable to retrieve comic conditions.'
+        );
+        dispatch({
+            type: GET_COMIC_CONDITIONS_FAILURE,
+            payload: failData
+        });
+    });
+}
 export const comicTitleChanged = (data)=>{
     return({
         type: COMIC_TITLE_CHANGED,
