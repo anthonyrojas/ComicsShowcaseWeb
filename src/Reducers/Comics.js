@@ -15,7 +15,8 @@ import {
     COMIC_IMAGE_CHANGED_SUCCESS,
     GET_COMIC_CONDITIONS_FAILURE,
     GET_COMIC_CONDITIONS_SUCCESS,
-    GET_COMIC_CONDITIONS_ATTEMPT
+    GET_COMIC_CONDITIONS_ATTEMPT,
+    CHANGE_COMICS_PAGINATION_LIMIT
 } from '../Actions/types';
 import {EMPTY_ARR, EMPTY_STR, DEFAULT_NUM} from '../constants';
 const initialState = {
@@ -70,7 +71,10 @@ export default (state = initialState, action)=>{
             return{
                 ...state,
                 comicsLoading: true,
-                statusMessage: action.payload
+                statusMessage: action.payload.statusMessage,
+                comicsPaginate: action.payload.page,
+                comicLimit: action.payload.limit,
+                comicSkip: action.payload.skipComics
             }
         case GET_COMICS_FAILURE:
             return{
@@ -212,6 +216,11 @@ export default (state = initialState, action)=>{
                 ...state,
                 comicConditionsLoading: false,
                 comicConditions: action.payload.comicsConditions
+            }
+        case CHANGE_COMICS_PAGINATION_LIMIT:
+            return{
+                ...state,
+                comicLimit: action.payload
             }
         default: state
     }

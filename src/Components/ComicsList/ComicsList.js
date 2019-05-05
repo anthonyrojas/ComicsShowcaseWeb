@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import './ComicsList.css'
-import PropTypes from 'prop-types'
+import './ComicsList.css';
+import {Link} from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
     getComicsAttempt,
     getComicConditions,
-
+    changeComicsPaginationLimit
 } from '../../Actions/Comics';
 import List from '@material-ui/core/List';
 import Paper from '@material-ui/core/Paper';
@@ -26,7 +26,37 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 import TableFooter from '@material-ui/core/TableFooter';
 
 class ComicsList extends Component {
-
+    componentDidMount(){
+        let data = {
+            page: 0,
+            limit: this.props.comicLimit,
+            skipComics: 0,
+            statusMessage: 'Retrieving comics',
+            userID: this.props.match.params.user
+        }
+        this.props.getComicsAttempt(data);
+    }
+    onChangePaginationPage(e, page){
+        let data = {
+            page: page,
+            limit: this.props.comicLimit,
+            skipComics: this.props.comicLimit * page,
+            statusMessage: 'Retrieving comics',
+            userID: this.props.match.params.user
+        }
+        this.props.getComicsAttempt(data)
+    }
+    onChangePaginationRows(e){
+        changeComicsPaginationLimit(e.target.value);
+        let data = {
+            limit: e.target.value,
+            skipComics: state.comics.comicSkip,
+            statusMessage: 'Retreiving comics',
+            page: state.comics.comicSkip/e.target.value,
+            userID: this.props.match.params.user
+        }
+        this.props.getComicsAttempt(data);
+    }
   render() {
     return (
       <div className='comics-list'>
@@ -72,7 +102,9 @@ class ComicsList extends Component {
                                     this.props.comicsList.map((comic)=>{
                                         <TableRow key={comic.id}>
                                             <TableCell colSpan={2}>
-                                                {comic.title}
+                                                <Link to={`/comic/${comic.id}`}>
+                                                    {comic.title}
+                                                </Link>
                                             </TableCell>
                                             <TableCell>
                                                 {comic.upc}
@@ -97,9 +129,9 @@ class ComicsList extends Component {
                                         SelectProps={{
                                             native: true
                                         }}
-                                    >
-
-                                    </TablePagination>
+                                        onChangePage={this.onChangePaginationPage.bind(this, page)}
+                                        onChangeRowsPerPage={this.onChangePaginationRows.bind(this)}
+                                    />
                                 </TableRow>
                             </TableFooter>
                         </TableHead>
@@ -113,12 +145,19 @@ class ComicsList extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    comicsList: state.comics.comics
+    comicsList: state.comics.comics,
+    comicsPaginate: state.comics.comicsPaginate,
+    comicLimit: state.comics.comicLimit,
+    comicSkip: state.comics.comicSkip,
+    comicsCount: state.comics.comicsCount,
+    comicsLoading: state.comics.comicsLoading,
+    comicsErr: state.comics.comicsErr,
+    comicConditions: state.comics.comicConditions
 });
 
 const mapDispatchToProps = {
     getComicsAttempt,
-    getComicConditions
+    getComicConditions,
+    changeComicsPaginationLimit
 }
-
 export default connect(mapStateToProps, mapDispatchToProps)(ComicsList);

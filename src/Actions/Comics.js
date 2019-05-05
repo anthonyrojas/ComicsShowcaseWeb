@@ -1,4 +1,4 @@
-import {HOST, EMPTY_STR, EMPTY_ARR} from '../constants';
+import {HOST} from '../constants';
 import axios from 'axios';
 import {
     GET_COMICS_ATTEMPT,
@@ -18,22 +18,27 @@ import {
     COMIC_CREATORS_CHANGED,
     COMIC_CONDITION_CHANGED,
     GET_COMIC_CONDITIONS_SUCCESS,
-    GET_COMIC_CONDITIONS_FAILURE
+    GET_COMIC_CONDITIONS_FAILURE,
+    CHANGE_COMICS_PAGINATION_LIMIT
 } from './types';
-import {HOST, EMPTY_ARR, EMPTY_STR} from '../constants';
 
 export const getComicsAttempt = (data)=>{
     return(dispatch)=>{
         dispatch({
             type: GET_COMICS_ATTEMPT,
-            payload: data.statusMessage
+            payload: {
+                statusMessage: data.statusMessage,
+                page: data.page,
+                limit: data.limit,
+                skipComics: data.skipComics
+            }
         });
         let config = {
             headers: {
                 Authorization: localStorage.getItem('token')
             }
         }
-        axios.get(`${HOST}/api/comics/user/${data.userID}?limit=15&skip=${data.skipComics}`, config)
+        axios.get(`${HOST}/api/comics/user/${data.userID}?limit=${data.limit}&skip=${data.skipComics}`, config)
         .then(res =>{
             dispatch({
                 type: GET_COMICS_SUCCESS,
@@ -175,6 +180,12 @@ export const comicPublisherChanged = (data)=>{
 export const comicCreatorsChanged = (data)=>{
     return({
         type: COMIC_CREATORS_CHANGED,
+        payload: data
+    });
+}
+export const changeComicsPaginationLimit = (data)=>{
+    return({
+        type: CHANGE_COMICS_PAGINATION_LIMIT,
         payload: data
     });
 }
