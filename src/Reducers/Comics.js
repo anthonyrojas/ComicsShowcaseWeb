@@ -3,6 +3,8 @@ import {
     GET_COMICS_FAILURE,
     GET_COMICS_SUCCESS,
     GET_COMIC_ATTEMPT,
+    GET_COMIC_SUCCESS,
+    GET_COMIC_FAILURE,
     COMIC_TITLE_CHANGED,
     COMIC_DESCRIPTION_CHANGED,
     COMIC_UPC_CHANGED,
@@ -30,7 +32,7 @@ const initialState = {
     comicsErr: EMPTY_STR,
     comicErr: EMPTY_STR,
     uploadingImage: false,
-    statusMessage: action.payload,
+    statusMessage: EMPTY_STR,
     comicConditionsLoading: false,
     comicConditions: EMPTY_ARR,
     comic: {
@@ -222,6 +224,6 @@ export default (state = initialState, action)=>{
                 ...state,
                 comicLimit: action.payload
             }
-        default: state
+        default: return state
     }
 }
