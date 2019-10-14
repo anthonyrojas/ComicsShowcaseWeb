@@ -1,5 +1,3 @@
-import {HOST} from '../constants';
-import axios from 'axios';
 import {
     GET_COMICS_ATTEMPT,
     GET_COMICS_FAILURE,
@@ -21,6 +19,7 @@ import {
     GET_COMIC_CONDITIONS_FAILURE,
     CHANGE_COMICS_PAGINATION_LIMIT
 } from './types';
+import axiosClient from '../axiosClient';
 
 export const getComicsAttempt = (data)=>{
     return(dispatch)=>{
@@ -33,12 +32,7 @@ export const getComicsAttempt = (data)=>{
                 skipComics: data.skipComics
             }
         });
-        let config = {
-            headers: {
-                Authorization: localStorage.getItem('token')
-            }
-        }
-        axios.get(`${HOST}/api/comics/user/${data.userID}?limit=${data.limit}&skip=${data.skipComics}`, config)
+        axiosClient.get(`/api/comics/user/${data.userID}?limit=${data.limit}&skip=${data.skipComics}`)
         .then(res =>{
             dispatch({
                 type: GET_COMICS_SUCCESS,
@@ -60,12 +54,7 @@ export const addComicAttempt = (data)=>{
             type: ADD_COMIC_ATTEMPT,
             payload: data.statusMessage
         });
-        let config = {
-            headers: {
-                Authorization: localStorage.getItem('token')
-            }
-        };
-        axios.post(`${HOST}/api/comics`, data.comicData, config)
+        axiosClient.post('/api/comics', data.comicData)
         .then(res=>{
             dispatch({
                 type: ADD_COMIC_SUCCESS,
@@ -91,12 +80,7 @@ export const getComicAttempt = (data)=>{
             type: GET_COMIC_ATTEMPT,
             payload: data.statusMessage
         });
-        let config = {
-            headers: {
-                Authorization: localStorage.getItem('token')
-            }
-        }
-        axios.get(`${HOST}/api/comics/${data.comicId}`, config)
+        axiosClient.get(`/api/comics/${data.comicId}`)
         .then(res => {
             dispatch({
                 type: GET_COMIC_SUCCESS,
@@ -117,12 +101,7 @@ export const getComicAttempt = (data)=>{
     }
 }
 export const getComicConditions = (data)=>{
-    let config = {
-        headers: {
-            Authorization: localStorage.getItem('token')
-        }
-    }
-    axios.get(`${HOST}/api/comics`)
+    axiosClient.get('/api/comics/comics-conditions')
     .then(res => {
         dispatch({
             type: GET_COMIC_CONDITIONS_SUCCESS,

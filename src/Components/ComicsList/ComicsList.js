@@ -7,7 +7,6 @@ import {
     getComicConditions,
     changeComicsPaginationLimit
 } from '../../Actions/Comics';
-import List from '@material-ui/core/List';
 import Paper from '@material-ui/core/Paper';
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Grid from '@material-ui/core/Grid';
