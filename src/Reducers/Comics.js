@@ -38,7 +38,7 @@ const initialState = {
     comic: {
         title: EMPTY_STR,
         description: EMPTY_STR,
-        UPC: DEFAULT_NUM,
+        upc: DEFAULT_NUM,
         //the five digit issue identifier
         //[0-3]: issue number
         //[4]: variant
@@ -53,7 +53,7 @@ const initialState = {
     errors: {
         title: EMPTY_STR,
         description: EMPTY_STR,
-        UPC: EMPTY_STR,
+        upc: EMPTY_STR,
         //the five digit issue identifier
         //[0-3]: issue number
         //[4]: variant
@@ -107,7 +107,7 @@ export default (state = initialState, action)=>{
                 comic: {
                     title: action.payload.comic.title,
                     description: action.payload.comic.description,
-                    UPC: action.payload.comic.UPC,
+                    upc: action.payload.comic.upc,
                     imageStr: action.payload.comic.imageStr,
                     fiveDigitId: action.payload.comic.fiveDigitId,
                     condition: action.payload.comic.condition,
@@ -142,7 +142,7 @@ export default (state = initialState, action)=>{
             return{
                 ...state,
                 comic: {
-                    UPC: action.payload
+                    upc: action.payload
                 }
             }
         case COMIC_CONDITION_CHANGED:

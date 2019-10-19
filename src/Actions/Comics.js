@@ -5,6 +5,12 @@ import {
     ADD_COMIC_ATTEMPT,
     ADD_COMIC_SUCCESS,
     ADD_COMIC_FAILURE,
+    UPDATE_COMIC_ATTEMPT,
+    UPDATE_COMIC_FAILURE,
+    UPDATE_COMIC_SUCCESS,
+    DELETE_COMIC_ATTEMPT,
+    DELETE_COMIC_FAILURE,
+    DELETE_COMIC_SUCCESS,
     GET_COMIC_ATTEMPT,
     GET_COMIC_SUCCESS,
     GET_COMIC_FAILURE,
@@ -20,6 +26,7 @@ import {
     CHANGE_COMICS_PAGINATION_LIMIT
 } from './types';
 import axiosClient from '../axiosClient';
+import { ComicBook } from '../Models/ComicBook';
 
 export const getComicsAttempt = (data)=>{
     return(dispatch)=>{
@@ -49,29 +56,68 @@ export const getComicsAttempt = (data)=>{
     }
 }
 export const addComicAttempt = (data)=>{
-    return(dispatch)=>{
+    return async (dispatch)=>{
         dispatch({
             type: ADD_COMIC_ATTEMPT,
-            payload: data.statusMessage
+            payload: true
         });
-        axiosClient.post('/api/comics', data.comicData)
-        .then(res=>{
-            dispatch({
-                type: ADD_COMIC_SUCCESS,
-                payload: res.data
-            });
-        })
-        .catch(err=>{
-            let failData = (
-                err.response !== undefined ? 
-                err.reponse.data.statusMessage :
-                'No internet connection.'
-            )
+        let comic = new ComicBook(data);
+        let comicErrors = comic.validate();
+        if(comicErrors.errorExists){
             dispatch({
                 type: ADD_COMIC_FAILURE,
-                payload: failData
+                payload: {
+                    errors: comicErrors.errors,
+                    statusMessage: 'There are errors in your submission.'
+                }
             });
+        }else{
+            try{
+                let res = await axiosClient.post('/api/comics', comic.toJson());
+                dispatch({
+                    type: ADD_COMIC_SUCCESS,
+                    payload: res.data
+                })
+            }catch(e){
+                dispatch({
+                    type: ADD_COMIC_FAILURE,
+                    payload: e.response.data
+                })
+            }
+        }
+    }
+}
+export const updateComicAttempt = (data) => {
+    return async (dispatch) => {
+        dispatch({
+            type: UPDATE_COMIC_ATTEMPT,
+            payload: true
         });
+        let comic = new ComicBook(data);
+        comic.id = data.id
+        let comicErrors = comic.validate();
+        if(comicErrors.errorExists){
+            dispatch({
+                type: UPDATE_COMIC_FAILURE,
+                payload: {
+                    statusMessage: 'There are errors in your submission.',
+                    errors: comicErrors.errors
+                }
+            });
+        }else{
+            try{
+                const res = await axiosClient(`/api/comics/${comic.id}`, comic.toJson());
+                dispatch({
+                    type: UPDATE_COMIC_SUCCESS,
+                    payload: res.data
+                });
+            }catch(e){
+                dispatch({
+                    type: UPDATE_COMIC_FAILURE,
+                    payload: e.response.data
+                })
+            }
+        }
     }
 }
 export const getComicAttempt = (data)=>{
@@ -98,6 +144,26 @@ export const getComicAttempt = (data)=>{
                 payload: failData
             });
         });
+    }
+}
+export const deleteComicAttempt = (data) => {
+    return async (dispatch) => {
+        dispatch({
+            type: DELETE_COMIC_ATTEMPT,
+            payload: true
+        });
+        try{
+            const res = await axiosClient.delete(`/api/comics/${data}`);
+            dispatch({
+                type: DELETE_COMIC_SUCCESS,
+                payload: res.data
+            })
+        }catch(e){
+            dispatch({
+                type: DELETE_COMIC_FAILURE,
+                payload: e.response.data
+            })
+        }
     }
 }
 export const getComicConditions = (data)=>{

@@ -15,6 +15,7 @@ import {
     CREATOR_LAST_NAME_CHANGED
 } from './types';
 import axiosClient from '../axiosClient';
+import { Creator } from '../Models/Creator';
 
 export const creatorLastNameChanged = (data) => {
     return({
@@ -43,7 +44,7 @@ export const getCreators = (data) => {
         }catch(e){
             dispatch({
                 type: GET_CREATORS_FAILURE,
-                payload: e.response
+                payload: e.response.data
             });
         }
     }
@@ -54,21 +55,29 @@ export const addCreator = (data) => {
             type: ADD_CREATOR_ATTEMPT,
             payload: true
         });
-        try{
-            let reqData = {
-                firstName: data.firstName,
-                lastName: data.lastName
-            };
-            let res = await axiosClient.post('/api/creators', reqData);
-            dispatch({
-                type: ADD_CREATOR_SUCCESS,
-                payload: res.data
-            });
-        }catch(e){
+        let creator = new Creator(data);
+        let creatorErrors = creator.validate();
+        if(creatorErrors.errorExists){
             dispatch({
                 type: ADD_CREATOR_FAILURE,
-                payload: e.response
-            });
+                payload: {
+                    statusMessage: 'There are errors in your submission.',
+                    errors: creatorErrors.errors
+                }
+            })
+        }else{
+            try{
+                let res = await axiosClient.post('/api/creators', creator.toJson());
+                dispatch({
+                    type: ADD_CREATOR_SUCCESS,
+                    payload: res.data
+                });
+            }catch(e){
+                dispatch({
+                    type: ADD_CREATOR_FAILURE,
+                    payload: e.response.data
+                });
+            }
         }
     }
 }
@@ -87,7 +96,7 @@ export const deleteCreator = (data) => {
         }catch(e){
             dispatch({
                 type: DELETE_CREATOR_FAILURE,
-                payload: e.response
+                payload: e.response.data
             });
         }
     }
@@ -98,17 +107,30 @@ export const updateCreator = (data) => {
             type: UPDATE_CREATOR_ATTEMPT,
             payload: true
         });
-        try{
-            let res = await axiosClient(`/api/creators`, data);
-            dispatch({
-                type: UPDATE_CREATOR_SUCCESS,
-                payload: res.data
-            });
-        }catch(e){
+        let creator = new Creator(data);
+        creator.id = data.id;
+        let creatorErrors = creator.validate();
+        if(creatorErrors.errorExists){
             dispatch({
                 type: UPDATE_CREATOR_FAILURE,
-                payload: e.response
-            });
+                payload: {
+                    statusMessage: 'There are errors in your submission.',
+                    errors: creatorErrors.errors
+                }
+            })
+        }else{
+            try{
+                let res = await axiosClient(`/api/creators/${creator.id}`, creator.toJson());
+                dispatch({
+                    type: UPDATE_CREATOR_SUCCESS,
+                    payload: res.data
+                });
+            }catch(e){
+                dispatch({
+                    type: UPDATE_CREATOR_FAILURE,
+                    payload: e.response.data
+                });
+            }
         }
     }
 }
