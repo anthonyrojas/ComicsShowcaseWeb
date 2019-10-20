@@ -44,7 +44,7 @@ export const getGraphicNovels = (data) => {
         }catch(e){
             dispatch({
                 type: GET_GRAPHIC_NOVELS_FAILURE,
-                payload: e.reponse.message
+                payload: e.reponse.data
             });
         }
     }
@@ -64,7 +64,7 @@ export const getGraphicNovel = (data) => {
         }catch(e){
             dispatch({
                 type: GET_GRAPHIC_NOVEL_FAILURE,
-                payload: e.response.message
+                payload: e.response.data
             })
         }
     }
@@ -171,7 +171,7 @@ export const addGraphicNovel = (data) => {
             }catch(e){
                 dispatch({
                     type: ADD_GRAPHIC_NOVEL_FAILURE,
-                    payload: e.response.data.errors
+                    payload: e.response.data
                 });
             }
         }
@@ -220,7 +220,7 @@ export const deleteGraphicNovel = (data) => {
             const res = await axiosClient.delete(`/api/graphicnovels/${data}`);
             dispatch({
                 type: DELETE_GRAPHIC_NOVEL_SUCCESS,
-                payload: res.data
+                payload: {...res.data, id: data}
             })
         }catch(e){
             dispatch({

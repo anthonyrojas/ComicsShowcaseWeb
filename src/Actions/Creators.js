@@ -91,7 +91,7 @@ export const deleteCreator = (data) => {
             let res = await axiosClient.delete(`/api/creators/${data}`);
             dispatch({
                 type: DELETE_CREATOR_SUCCESS,
-                payload: res.data
+                payload: {...res.data, id: data}
             });
         }catch(e){
             dispatch({

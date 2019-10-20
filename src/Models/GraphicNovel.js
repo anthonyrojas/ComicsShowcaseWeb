@@ -6,8 +6,8 @@ export class GraphicNovel {
     isbn = '';
     description = '';
     imageStr = '';
-    graphicNovelType = '';
-    bookCondition = '';
+    graphicNovelType = 0;
+    bookCondition = 0;
     publisher = '';
     creators = [];
     constructor(config){
