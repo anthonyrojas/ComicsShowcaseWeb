@@ -23,36 +23,29 @@ import {
     COMIC_CONDITION_CHANGED,
     GET_COMIC_CONDITIONS_SUCCESS,
     GET_COMIC_CONDITIONS_FAILURE,
-    CHANGE_COMICS_PAGINATION_LIMIT
+    GET_COMIC_CONDITIONS_ATTEMPT,
 } from './types';
 import axiosClient from '../axiosClient';
 import { ComicBook } from '../Models/ComicBook';
 
 export const getComicsAttempt = (data)=>{
-    return(dispatch)=>{
+    return async (dispatch) => {
         dispatch({
             type: GET_COMICS_ATTEMPT,
-            payload: {
-                statusMessage: data.statusMessage,
-                page: data.page,
-                limit: data.limit,
-                skipComics: data.skipComics
-            }
+            payload: true
         });
-        axiosClient.get(`/api/comics/user/${data.userID}?limit=${data.limit}&skip=${data.skipComics}`)
-        .then(res =>{
+        try{
+            const res = await axiosClient.get('/api/comics');
             dispatch({
                 type: GET_COMICS_SUCCESS,
                 payload: res.data
-            });
-        })
-        .catch(err=>{
-            let failData = (err.response !== undefined ? err.response.data.statusMessage : 'No internet connection');
+            })
+        }catch(e){
             dispatch({
                 type: GET_COMICS_FAILURE,
-                payload: failData
+                payload: e.response.data
             })
-        });
+        }
     }
 }
 export const addComicAttempt = (data)=>{
@@ -121,29 +114,23 @@ export const updateComicAttempt = (data) => {
     }
 }
 export const getComicAttempt = (data)=>{
-    return(dispatch)=>{
+    return async (dispatch) => {
         dispatch({
             type: GET_COMIC_ATTEMPT,
-            payload: data.statusMessage
+            payload: true
         });
-        axiosClient.get(`/api/comics/${data.comicId}`)
-        .then(res => {
+        try{
+            const res = await axiosClient.get(`/api/comics/${data}`);
             dispatch({
                 type: GET_COMIC_SUCCESS,
                 payload: res.data
-            });
-        })
-        .catch(err => {
-            let failData = (
-                err.response !== undefined ?
-                err.response.data.statusMessage : 
-                'No internet connection'
-            );
+            })
+        }catch(e){
             dispatch({
                 type: GET_COMIC_FAILURE,
-                payload: failData
-            });
-        });
+                payload: e.response.data
+            })
+        }
     }
 }
 export const deleteComicAttempt = (data) => {
@@ -167,24 +154,30 @@ export const deleteComicAttempt = (data) => {
     }
 }
 export const getComicConditions = (data)=>{
-    axiosClient.get('/api/comics/comics-conditions')
-    .then(res => {
+    return (dispatch) => {
         dispatch({
-            type: GET_COMIC_CONDITIONS_SUCCESS,
-            payload: res.data
+            type: GET_COMIC_CONDITIONS_ATTEMPT,
+            payload: true
+        })
+        axiosClient.get('/api/comics/comics-conditions')
+        .then(res => {
+            dispatch({
+                type: GET_COMIC_CONDITIONS_SUCCESS,
+                payload: res.data
+            });
+        })
+        .catch(err => {
+            let failData = (
+                err.response !== undefined ?
+                err.response.data.statusMessage :
+                'Unable to retrieve comic conditions.'
+            );
+            dispatch({
+                type: GET_COMIC_CONDITIONS_FAILURE,
+                payload: failData
+            });
         });
-    })
-    .catch(err => {
-        let failData = (
-            err.response !== undefined ?
-            err.response.data.statusMessage :
-            'Unable to retrieve comic conditions.'
-        );
-        dispatch({
-            type: GET_COMIC_CONDITIONS_FAILURE,
-            payload: failData
-        });
-    });
+    }
 }
 export const comicTitleChanged = (data)=>{
     return({
@@ -225,12 +218,6 @@ export const comicPublisherChanged = (data)=>{
 export const comicCreatorsChanged = (data)=>{
     return({
         type: COMIC_CREATORS_CHANGED,
-        payload: data
-    });
-}
-export const changeComicsPaginationLimit = (data)=>{
-    return({
-        type: CHANGE_COMICS_PAGINATION_LIMIT,
         payload: data
     });
 }

@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import './ComicsList.css';
 import {Link} from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
     getComicsAttempt,
-    getComicConditions,
-    changeComicsPaginationLimit
+    getComicConditions
 } from '../../Actions/Comics';
 import Paper from '@material-ui/core/Paper';
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -18,38 +16,34 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableFooter from '@material-ui/core/TableFooter';
+import Typography from '@material-ui/core/Typography';
 
-class ComicsList extends Component {
-    componentDidMount(){
-        let data = {
-            page: 0,
-            limit: this.props.comicLimit,
-            skipComics: 0,
-            statusMessage: 'Retrieving comics',
-            userID: this.props.match.params.user
-        }
-        this.props.getComicsAttempt(data);
+class ComicsTable extends Component {
+    state = {
+        rowsPerPage: 5,
+        page: 0
     }
-    onChangePaginationPage(e, page){
-        let data = {
-            page: page,
-            limit: this.props.comicLimit,
-            skipComics: this.props.comicLimit * page,
-            statusMessage: 'Retrieving comics',
-            userID: this.props.match.params.user
-        }
-        this.props.getComicsAttempt(data)
+    componentDidMount(){
+        this.props.getComicsAttempt();
+    }
+    onChangePaginationPage(e){
+        this.setState({
+            ...this.state,
+            page: e.target.value
+        });
     }
     onChangePaginationRows(e){
-        changeComicsPaginationLimit(e.target.value);
-        let data = {
-            limit: e.target.value,
-            skipComics: state.comics.comicSkip,
-            statusMessage: 'Retreiving comics',
-            page: state.comics.comicSkip/e.target.value,
-            userID: this.props.match.params.user
+        let page = this.state.page;
+        const rowCount = e.target.value;
+        const totalCount = this.props.comicsList.length;
+        while((rowCount * page) > totalCount){
+            let page = page - 1;
         }
-        this.props.getComicsAttempt(data);
+        this.setState({
+            ...this.state,
+            rowsPerPage: rowCount,
+            page: page
+        });
     }
   render() {
     return (
@@ -93,7 +87,7 @@ class ComicsList extends Component {
                             </TableRow>
                             <TableBody>
                                 {
-                                    this.props.comicsList.map((comic)=>{
+                                    this.props.comicsList.map((comic)=>(
                                         <TableRow key={comic.id}>
                                             <TableCell colSpan={2}>
                                                 <Link to={`/comic/${comic.id}`}>
@@ -110,20 +104,17 @@ class ComicsList extends Component {
                                                 {comic.fiveDigitId}
                                             </TableCell>
                                         </TableRow>
-                                    })
+                                    ))
                                 }
                             </TableBody>
                             <TableFooter>
                                 <TableRow>
                                     <TablePagination
                                         rowsPerPageOptions={[5,10,15]}
-                                        rowsPerPage={this.props.comicLimit}
-                                        count={this.props.comicsCount}
-                                        page={this.props.comicsPaginate}
-                                        SelectProps={{
-                                            native: true
-                                        }}
-                                        onChangePage={this.onChangePaginationPage.bind(this, page)}
+                                        rowsPerPage={this.state.rowsPerPage}
+                                        count={this.props.comicsList.length}
+                                        page={this.state.page}
+                                        onChangePage={this.onChangePaginationPage.bind(this)}
                                         onChangeRowsPerPage={this.onChangePaginationRows.bind(this)}
                                     />
                                 </TableRow>
@@ -139,11 +130,7 @@ class ComicsList extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    comicsList: state.comics.comics,
-    comicsPaginate: state.comics.comicsPaginate,
-    comicLimit: state.comics.comicLimit,
-    comicSkip: state.comics.comicSkip,
-    comicsCount: state.comics.comicsCount,
+    comicsList: state.comics.comicsList,
     comicsLoading: state.comics.comicsLoading,
     comicsErr: state.comics.comicsErr,
     comicConditions: state.comics.comicConditions
@@ -151,7 +138,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
     getComicsAttempt,
-    getComicConditions,
-    changeComicsPaginationLimit
+    getComicConditions
 }
-export default connect(mapStateToProps, mapDispatchToProps)(ComicsList);
+export default connect(mapStateToProps, mapDispatchToProps)(ComicsTable);

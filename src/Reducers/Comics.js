@@ -18,14 +18,17 @@ import {
     GET_COMIC_CONDITIONS_FAILURE,
     GET_COMIC_CONDITIONS_SUCCESS,
     GET_COMIC_CONDITIONS_ATTEMPT,
-    CHANGE_COMICS_PAGINATION_LIMIT
 } from '../Actions/types';
 import {EMPTY_ARR, EMPTY_STR, DEFAULT_NUM} from '../constants';
 const initialState = {
-    comicsPaginate: DEFAULT_NUM,
-    comicSkip: DEFAULT_NUM,
-    comicLimit: 10,
-    comicsCount: DEFAULT_NUM,
+    title: EMPTY_STR,
+    description: EMPTY_STR,
+    upc: EMPTY_STR,
+    fiveDigitId: EMPTY_STR,
+    imageStr: EMPTY_STR,
+    pubisher: EMPTY_STR,
+    condition: DEFAULT_NUM,
+    creators: EMPTY_ARR,
     comicsLoading: false,
     comicLoading: false,
     comicsList: EMPTY_ARR,
@@ -35,21 +38,7 @@ const initialState = {
     statusMessage: EMPTY_STR,
     comicConditionsLoading: false,
     comicConditions: EMPTY_ARR,
-    comic: {
-        title: EMPTY_STR,
-        description: EMPTY_STR,
-        upc: DEFAULT_NUM,
-        //the five digit issue identifier
-        //[0-3]: issue number
-        //[4]: variant
-        //[5]: printing,
-        imageStr: EMPTY_STR,
-        fiveDigitId: DEFAULT_NUM,
-        condition: EMPTY_STR,
-        user: EMPTY_STR,
-        publisher:EMPTY_STR,
-        creators: EMPTY_ARR
-    },
+    comic: EMPTY_STR,
     errors: {
         title: EMPTY_STR,
         description: EMPTY_STR,
@@ -74,23 +63,19 @@ export default (state = initialState, action)=>{
                 ...state,
                 comicsLoading: true,
                 statusMessage: action.payload.statusMessage,
-                comicsPaginate: action.payload.page,
-                comicLimit: action.payload.limit,
-                comicSkip: action.payload.skipComics
+                errors: initialState.errors
             }
         case GET_COMICS_FAILURE:
             return{
                 ...state,
                 comicsLoading: false,
                 comicsList: EMPTY_ARR,
-                statusMessage: EMPTY_STR,
-                comicsErr: action.payload
+                statusMessage: action.payload.statusMessage,
             }
         case GET_COMICS_SUCCESS: 
             return{
                 ...state,
                 comicsList: action.payload.comics,
-                comicsCount: action.payload.comicsCount,
                 statusMessage: action.payload.statusMessage,
                 comicsLoading: false
             }
@@ -98,81 +83,55 @@ export default (state = initialState, action)=>{
             return{
                 ...state,
                 comicLoading: true,
-                statusMessage: action.payload
+                statusMessage: EMPTY_STR
             }
         case GET_COMIC_SUCCESS:
             return{
                 ...state,
                 comicLoading: false,
-                comic: {
-                    title: action.payload.comic.title,
-                    description: action.payload.comic.description,
-                    upc: action.payload.comic.upc,
-                    imageStr: action.payload.comic.imageStr,
-                    fiveDigitId: action.payload.comic.fiveDigitId,
-                    condition: action.payload.comic.condition,
-                    user: action.payload.comic.user,
-                    publisher: action.payload.comic.publisher,
-                    creators: action.payload.comic.creators
-                },
-                statusMessage: action.payload.statusMessage
+                comic: action.payload.comic,
             }
         case GET_COMIC_FAILURE: 
             return{
                 ...state,
                 comicLoading: false,
-                comicErr: action.payload,
-                statusMessage: EMPTY_STR
+                statusMessage: action.payload.statusMessage
             }
         case COMIC_TITLE_CHANGED: 
             return{
                 ...state,
-                comic: {
-                    title: action.payload
-                }
+                title: action.payload
             }
         case COMIC_DESCRIPTION_CHANGED:
             return{
                 ...state,
-                comic: {
-                    description: action.payload
-                }
+                description: action.payload
             }
         case COMIC_UPC_CHANGED:
             return{
                 ...state,
-                comic: {
-                    upc: action.payload
-                }
+                upc: action.payload
             }
         case COMIC_CONDITION_CHANGED:
             return{
                 ...state,
-                comic:{
-                    condition: action.payload
-                }
+                condition: action.payload
             }
         case COMIC_FIVE_DIGIT_ID_CHANGED:
             return{
                 ...state,
-                comic:{
-                    fiveDigitId: action.payload
-                }
+                fiveDigitId: action.payload
             }
         case COMIC_PUBLISHER_CHANGED: {
             return{
                 ...state,
-                comic: {
-                    publisher: action.payload
-                }
+                publisher: action.payload
             }
         }
         case COMIC_CREATORS_CHANGED:
             return{
                 ...state,
-                comic: {
-                    creators: action.payload
-                }
+                creators: action.payload
             }
         case COMIC_IMAGE_CHANGED_ATTEMPT:
             return{
@@ -180,6 +139,7 @@ export default (state = initialState, action)=>{
                 uploadingImage: true,
                 statusMessage: action.payload,
                 errors: {
+                    ...state.errors,
                     imageStr: EMPTY_STR
                 }
             }
@@ -188,6 +148,7 @@ export default (state = initialState, action)=>{
                 ...state,
                 uploadingImage: false,
                 errors: {
+                    ...state.errors,
                     imageStr: action.payload
                 }
             }
@@ -195,10 +156,9 @@ export default (state = initialState, action)=>{
             return{
                 ...state,
                 uploadingImage: false,
-                comic: {
-                    imageStr: action.payload
-                },
+                imageStr: action.payload,
                 errors: {
+                    ...state.errors,
                     imageStr: EMPTY_STR
                 }
             }
@@ -218,11 +178,6 @@ export default (state = initialState, action)=>{
                 ...state,
                 comicConditionsLoading: false,
                 comicConditions: action.payload.comicsConditions
-            }
-        case CHANGE_COMICS_PAGINATION_LIMIT:
-            return{
-                ...state,
-                comicLimit: action.payload
             }
         default: return state
     }

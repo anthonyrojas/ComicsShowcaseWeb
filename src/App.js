@@ -14,6 +14,7 @@ import Account from './Components/Account/Account';
 import Aux from './HOC/AuxHOC';
 import UserAuthRoute from './Commons/UserAuthRoute/UserAuthRoute';
 import PrivateRoute from './Commons/PrivateRoute/PrivateRoute';
+import ComicsTable from './Components/ComicsList/ComicsTable';
 const theme = createMuiTheme({
   palette: {
     type: 'dark',
@@ -58,6 +59,7 @@ class App extends Component {
                   <UserAuthRoute path='/login' component={Login} />
                   <UserAuthRoute path='/register' component={Register} />
                   <PrivateRoute path='/account' component={Account} />
+                  <PrivateRoute path='/comics' component={ComicsTable} />
                 </Switch>
               </Aux>
             </Router>

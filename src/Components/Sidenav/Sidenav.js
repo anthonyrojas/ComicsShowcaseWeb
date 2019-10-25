@@ -53,6 +53,22 @@ class Sidenav extends Component{
                                     <ListItemText primary='Logout'></ListItemText>
                                 </ListItem>
                             </Link>
+                            <Link style={{textDecoration: 'none'}} to='/account'>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <Icon>account_circle</Icon>
+                                    </ListItemIcon>
+                                    <ListItemText primary='Account' />
+                                </ListItem>
+                            </Link>
+                            <Link style={{textDecoration: 'none'}} to='/comics'>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <Icon>menu_book</Icon>
+                                    </ListItemIcon>
+                                    <ListItemText primary='Comic Books' />
+                                </ListItem>
+                            </Link>
                         </React.Fragment>
                     }
                 </List>
