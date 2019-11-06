@@ -53,3 +53,36 @@ export const COMIC_CONDITION_POOR = {
     name: 'Poor',
     value: 4
 }
+//publisher values
+export const PUBLISHER_DC = {
+    name: 'DC',
+    value: 0
+}
+export const PUBLISHER_VERTIGO = {
+    name: 'Vertigo',
+    value: 1
+}
+export const PUBLISHER_MARVEL = {
+    name: 'Marvel',
+    value: 2
+}
+export const PUBLISHER_IMAGE = {
+    name: 'Image',
+    value: 3
+}
+export const PUBLISHER_VALIANT = {
+    name: 'Valiant',
+    value: 4
+}
+export const PUBLISHER_DARK_HORSE = {
+    name: 'Dark Horse',
+    value: 5
+}
+export const PUBLISHER_IDW = {
+    name: 'IDW',
+    value: 6
+}
+export const PUBLISHER_OTHER = {
+    name: 'Other',
+    value: 7
+}

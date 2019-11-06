@@ -28,9 +28,6 @@ import AccountProfile from './AccountProfile';
 import AccountEmail from './AccountEmail';
 import AccountPassword from './AccountPassword';
 class Account extends Component{
-    componentDidMount(){
-        this.props.getAccountAttempt(true);
-    }
     onCloseUserSnackbar(e){
         this.props.resetUserStatusMessage(EMPTY_STR);
     }

@@ -49,6 +49,7 @@ class ComicsTable extends Component {
     return (
       <div className='comics-list'>
         <Grid
+            container
             direction='row'
             wrap='wrap'
             alignContent='center'
@@ -68,6 +69,7 @@ class ComicsTable extends Component {
                 <Paper
                     elevation={16}
                     className='px-3 py-2 h-100'
+                    square
                 >
                     <Table>
                         <TableHead>
@@ -85,41 +87,41 @@ class ComicsTable extends Component {
                                     Issue Ext.
                                 </TableCell>
                             </TableRow>
-                            <TableBody>
-                                {
-                                    this.props.comicsList.map((comic)=>(
-                                        <TableRow key={comic.id}>
-                                            <TableCell colSpan={2}>
-                                                <Link to={`/comic/${comic.id}`}>
-                                                    {comic.title}
-                                                </Link>
-                                            </TableCell>
-                                            <TableCell>
-                                                {comic.upc}
-                                            </TableCell>
-                                            <TableCell>
-                                                {comic.publisherStruct.name}
-                                            </TableCell>
-                                            <TableCell>
-                                                {comic.fiveDigitId}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                }
-                            </TableBody>
-                            <TableFooter>
-                                <TableRow>
-                                    <TablePagination
-                                        rowsPerPageOptions={[5,10,15]}
-                                        rowsPerPage={this.state.rowsPerPage}
-                                        count={this.props.comicsList.length}
-                                        page={this.state.page}
-                                        onChangePage={this.onChangePaginationPage.bind(this)}
-                                        onChangeRowsPerPage={this.onChangePaginationRows.bind(this)}
-                                    />
-                                </TableRow>
-                            </TableFooter>
                         </TableHead>
+                        <TableBody>
+                            {
+                                this.props.comicsList.map((comic)=>(
+                                    <TableRow key={comic.id}>
+                                        <TableCell colSpan={2}>
+                                            <Link to={`/comic/${comic.id}`}>
+                                                {comic.title}
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell>
+                                            {comic.upc}
+                                        </TableCell>
+                                        <TableCell>
+                                            {comic.publisherStruct.name}
+                                        </TableCell>
+                                        <TableCell>
+                                            {comic.fiveDigitId}
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            }
+                        </TableBody>
+                        <TableFooter>
+                            <TableRow>
+                                <TablePagination
+                                    rowsPerPageOptions={[5,10,15]}
+                                    rowsPerPage={this.state.rowsPerPage}
+                                    count={this.props.comicsList.length}
+                                    page={this.state.page}
+                                    onChangePage={this.onChangePaginationPage.bind(this)}
+                                    onChangeRowsPerPage={this.onChangePaginationRows.bind(this)}
+                                />
+                            </TableRow>
+                        </TableFooter>
                     </Table>
                 </Paper>
             </Grid>

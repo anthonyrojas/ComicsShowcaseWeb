@@ -1,7 +1,13 @@
 import React, {Component} from 'react';
 import {Redirect, Route} from 'react-router-dom';
 import {connect} from 'react-redux';
+import {
+    getAccountAttempt
+} from '../../Actions/Account'
 class PrivateRoute extends Component{
+    componentDidMount(){
+        this.props.getAccountAttempt(true);
+    }
     componentDidUpdate(){
         if(!this.props.authenticated){
             this.forceUpdate();
@@ -28,4 +34,5 @@ const mapStateToProps = state =>({
     authenticated: state.account.authenticated
 })
 export default connect(mapStateToProps,{
+    getAccountAttempt
 })(PrivateRoute);
