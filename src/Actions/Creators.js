@@ -12,7 +12,8 @@ import {
     UPDATE_CREATOR_FAILURE,
     UPDATE_CREATOR_SUCCESS,
     CREATOR_FIRST_NAME_CHANGED,
-    CREATOR_LAST_NAME_CHANGED
+    CREATOR_LAST_NAME_CHANGED,
+    CREATOR_MODAL_DISPLAY_TOGGLE
 } from './types';
 import axiosClient from '../axiosClient';
 import { Creator } from '../Models/Creator';
@@ -132,5 +133,11 @@ export const updateCreator = (data) => {
                 });
             }
         }
+    }
+}
+export const toggleDisplayCreatorModal = (data) => {
+    return{
+        type: CREATOR_MODAL_DISPLAY_TOGGLE,
+        payload: data
     }
 }

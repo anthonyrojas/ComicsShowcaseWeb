@@ -12,7 +12,8 @@ import {
     DELETE_CREATOR_SUCCESS,
     GET_CREATORS_ATTEMPT,
     GET_CREATORS_FAILURE,
-    GET_CREATORS_SUCCESS
+    GET_CREATORS_SUCCESS,
+    CREATOR_MODAL_DISPLAY_TOGGLE
 } from '../Actions/types';
 import {EMPTY_ARR, EMPTY_STR} from '../constants';
 
@@ -27,7 +28,8 @@ const initialState = {
     errors: {
         firstName: EMPTY_STR,
         lastName: EMPTY_STR
-    }
+    },
+    displayCreatorModal: false
 }
 export default (state = initialState, action) => {
     switch(action.type){
@@ -128,6 +130,11 @@ export default (state = initialState, action) => {
                 ...state,
                 deletingCreator: false,
                 statusMessage: action.payload.statusMessage,
+            }
+        case CREATOR_MODAL_DISPLAY_TOGGLE:
+            return{
+                ...state,
+                displayCreatorModal: action.payload
             }
         default: return state
     }
