@@ -11,7 +11,8 @@ import {connect} from 'react-redux';
 import {
     creatorFirstNameChanged,
     creatorLastNameChanged,
-    addCreator
+    addCreator,
+    toggleDisplayCreatorModal
 } from '../../Actions/Creators';
 import { isEmptyOrNullOrUndefined } from '../../Library/Helpers';
 
@@ -21,6 +22,15 @@ class CreatorFormDialog extends Component{
     }
     handleLastNameChanged(e){
         this.props.creatorLastNameChanged(e.target.value);
+    }
+    submitCreator(e){
+        this.props.addCreator({
+            firstName: this.props.firstName, 
+            lastName: this.props.lastName
+        });
+    }
+    hideCreatorModal(e){
+        this.props.toggleDisplayCreatorModal(false);
     }
     render(){
         return(
@@ -55,8 +65,8 @@ class CreatorFormDialog extends Component{
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant='text' color='primary'>Add</Button>
-                    <Button variant='text' color='secondary'>Close</Button>
+                    <Button variant='text' color='primary' onClick={this.submitCreator.bind(this)}>Add</Button>
+                    <Button variant='text' color='secondary' onClick={this.hideCreatorModal.bind(this)}>Close</Button>
                 </DialogActions>
             </Dialog>
         );
@@ -72,5 +82,6 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps, {
     creatorFirstNameChanged,
     creatorLastNameChanged,
-    addCreator
+    addCreator,
+    toggleDisplayCreatorModal
 })(CreatorFormDialog);
