@@ -21,6 +21,7 @@ import {
 } from '../Actions/types';
 import {EMPTY_ARR, EMPTY_STR, DEFAULT_NUM} from '../constants';
 const initialState = {
+    id: -1,
     title: EMPTY_STR,
     description: EMPTY_STR,
     upc: EMPTY_STR,
